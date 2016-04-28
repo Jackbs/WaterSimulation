@@ -26,6 +26,19 @@ public class Display {
 			for(int i = 0;i<16;i++){			
 				int id = chunk.getBlock(i,j,zLevel);
 				UI.setColor(ColorMap.get(id));
+				if(id == 0){
+					boolean foundblock = false;
+					for(int t = zLevel;t>=0;t--){
+						if(chunk.getBlock(i,j,t) != 0){
+							foundblock = true;
+							UI.setColor(ColorMap.get(chunk.getBlock(i,j,t)).darker());
+							break;
+						}
+					}
+					if(!foundblock){
+						UI.setColor(Color.black);
+					}
+				}
 				UI.fillRect(i*blksze, j*blksze, blksze, blksze);
 			}
 		}
