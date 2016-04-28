@@ -8,6 +8,7 @@ import java.util.Map;
 import ecs100.UI;
 
 public class Display {
+	Map<Integer, String> TextureMap = new HashMap<Integer, String>();
 	Map<Integer, Color> ColorMap = new HashMap<Integer, Color>();
 	
 	int blksze = 20;
@@ -19,12 +20,19 @@ public class Display {
 		ColorMap.put(1,Color.gray);
 		ColorMap.put(2,Color.green);
 		ColorMap.put(3,new Color(139,69,19));
+		
+		
+		TextureMap.put(-1,"void_top.png");
+		TextureMap.put(1,"stone_top.png");
+		TextureMap.put(2,"grass_top.png");
+		TextureMap.put(3,"dirt_top.png");
 	}
 
 	public void ShowChunk(Chunk chunk, int zLevel) { //will be changed to 2D array of chunks in future
 		for(int j = 0;j<16;j++){
 			for(int i = 0;i<16;i++){			
 				int id = chunk.getBlock(i,j,zLevel);
+				String Texture = (TextureMap.get(id));
 				UI.setColor(ColorMap.get(id));
 				if(id == 0){
 					boolean foundblock = false;
@@ -32,14 +40,17 @@ public class Display {
 						if(chunk.getBlock(i,j,t) != 0){
 							foundblock = true;
 							UI.setColor(ColorMap.get(chunk.getBlock(i,j,t)).darker());
+							Texture = (TextureMap.get(chunk.getBlock(i,j,t)));
 							break;
 						}
 					}
 					if(!foundblock){
 						UI.setColor(Color.black);
+						Texture = "void_top.png";
 					}
 				}
-				UI.fillRect(i*blksze, j*blksze, blksze, blksze);
+				UI.drawImage(Texture, i*blksze, j*blksze, blksze, blksze);
+				//UI.fillRect(i*blksze, j*blksze, blksze, blksze);
 			}
 		}
 		UI.repaintGraphics();
