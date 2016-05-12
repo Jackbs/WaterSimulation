@@ -11,7 +11,7 @@ public class Display {
 	Map<Integer, String> TextureMap = new HashMap<Integer, String>();
 	Map<Integer, Color> ColorMap = new HashMap<Integer, Color>();
 	
-	int blksze = 20;
+	int blksze = 50;
 	
 	public Display(){
 		UI.initialise();
@@ -44,8 +44,9 @@ public class Display {
 				int id = chunk.getBlock(i,j,zLevel);
 				String Texture = (TextureMap.get(id));
 				UI.setColor(ColorMap.get(id));
+				boolean foundblock = false;
 				if(id == 0){
-					boolean foundblock = false;
+					foundblock = false;
 					for(int t = zLevel;t>=0;t--){
 						if(chunk.getBlock(i,j,t) != 0){
 							foundblock = true;
