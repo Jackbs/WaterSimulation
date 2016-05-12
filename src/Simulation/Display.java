@@ -27,8 +27,18 @@ public class Display {
 		TextureMap.put(2,"grass_top.png");
 		TextureMap.put(3,"dirt_top.png");
 	}
+	
+	public void updateDisplay(Chunk onlyChunk, int zLevel) {
+		
+		ShowChunk(onlyChunk, zLevel);
+		UI.drawString(Integer.toString(zLevel), 20, 20);
+		UI.setFontSize(20);
+		UI.repaintGraphics();
+	}
+	
 
 	public void ShowChunk(Chunk chunk, int zLevel) { //will be changed to 2D array of chunks in future
+		UI.drawString(Integer.toString(zLevel), 5, 5);
 		for(int j = 0;j<16;j++){
 			for(int i = 0;i<16;i++){			
 				int id = chunk.getBlock(i,j,zLevel);
@@ -53,6 +63,10 @@ public class Display {
 				//UI.fillRect(i*blksze, j*blksze, blksze, blksze);
 			}
 		}
-		UI.repaintGraphics();
+		
 	}
+
+
+
+	
 }

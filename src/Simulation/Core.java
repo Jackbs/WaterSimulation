@@ -57,7 +57,7 @@ public class Core {
 	}
 	
 	public void updateDisplay(){
-		Display.ShowChunk(OnlyChunk,zLevel); //Method changed to array of chunks in future
+		Display.updateDisplay(OnlyChunk,zLevel); //Method changed to array of chunks in future
 	}
 
 
