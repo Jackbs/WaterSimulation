@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.awt.image.RescaleOp;
@@ -38,8 +39,8 @@ public class Display {
 	
 	public Display(){
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		double width = screenSize.getWidth();
-		double height = screenSize.getHeight();
+		double width = 1366; //screenSize.getWidth();
+		double height = 768; //screenSize.getHeight();
 		
 		UI.setWindowSize((int)width, (int)height);
 		UI.initialise();
@@ -63,11 +64,13 @@ public class Display {
 		TextureMap.put(3,"dirt_top.png");
 	}
 	
-	public void updateDisplay(Chunk onlyChunk, int zLevel, double x, double y, double scale) {
+	public void updateDisplay(Map<Point2D, Chunk> level, int zLevel, double x, double y, double scale) {
 		this.xOrg = x;
 		this.yOrg = y;		
 		this.scale = scale;
-		ShowChunk(onlyChunk, zLevel);
+		level.forEach( (k,v) -> ShowChunk(v,k, zLevel) );
+		
+		//ShowChunk(level, zLevel);
 		ShowUI(zLevel);
 		UI.repaintGraphics();
 	}
@@ -84,8 +87,9 @@ public class Display {
 		UI.drawString("Scale:"+Double.toString((int)scale), 80, yTopWidth+4);
 	}
 	
-	public void ShowChunk(Chunk chunk, int zLevel) { //will be changed to 2D array of chunks in future
-
+	public void ShowChunk(Chunk chunk, Point2D Point, int zLevel) { //will be changed to 2D array of chunks in future	
+		double Xchunkoffset = 16*(scale*blksze*Point.getX());
+		double Ychunkoffset = 16*(scale*blksze*Point.getY());
 		for(int j = 0;j<16;j++){
 			for(int i = 0;i<16;i++){			
 				int id = chunk.getBlock(i,j,zLevel);
@@ -126,7 +130,7 @@ public class Display {
 				}
 				
 				
-				UI.drawImage(img, (scale*i*blksze+xOrg), scale*j*blksze+yOrg, blksze*scale*1.1, blksze*scale*1.1);
+				UI.drawImage(img, Xchunkoffset+(scale*i*blksze+xOrg), Ychunkoffset+scale*j*blksze+yOrg, blksze*scale*1.1, blksze*scale*1.1);
 				//UI.drawImage(Texture, i*blksze, j*blksze, blksze, blksze);
 				//UI.fillRect(i*blksze, j*blksze, blksze, blksze);
 			}

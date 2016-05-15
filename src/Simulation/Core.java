@@ -7,22 +7,30 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.awt.event.MouseAdapter;
+import java.awt.geom.Point2D;
 
 import ecs100.UI;
 import ecs100.UIButtonListener;
 
 public class Core extends MouseAdapter{
 	
+	MinecraftIO MCIO;
 	Display Display;
+	
 	public Chunk OnlyChunk; //Will be changed to array of chunks in future 
-	public int zLevel = 1;
+	public int zLevel = 3;
 	
-	boolean Dragging = false;;
+	boolean Dragging = false;
 	
-	double scale = 1.0;
+	
+	
+	Map <Point2D, Chunk> Level = new HashMap<Point2D, Chunk>();
+	//List<Chunk> list = new ArrayList<Chunk>();
+	
+	double scale = 2.0;
 	double xOrg = 0.0;
 	double yOrg = 0.0;
 	double lastX = 0.0;
@@ -31,6 +39,11 @@ public class Core extends MouseAdapter{
 	double lastyOrg = 0.0;
 	
 	public Core() {
+		
+		MCIO = new MinecraftIO();
+		MCIO.ReadRegion();
+		
+		/*
 		Display = new Display();
 		UI.addButton("Load Chunks", this::loadChunks);
 		UI.addButton("Access random", this::accessrandom);
@@ -43,6 +56,8 @@ public class Core extends MouseAdapter{
 		UI.getFrame().findComponentAt(600, 300).addMouseMotionListener(this);
 		UI.getFrame().findComponentAt(600, 300).addMouseListener(this);
 		loadChunks();
+		updateDisplay();
+		*/
 	}
 	
 	
@@ -56,6 +71,45 @@ public class Core extends MouseAdapter{
 		OnlyChunk.getBlock(x, y, z);
 		System.out.println("Got Block: "+OnlyChunk.getBlock(x, y, z));
 	}
+	
+	
+	
+	public void loadChunks(){
+		Chunk WorkingChunk;
+		
+		UI.println("Loading Chunks");
+		File myfile1 = new File("c1.txt");
+		File myfile2 = new File("c2.txt");
+		File myfile3 = new File("c3.txt");
+		File myfile4 = new File("c4.txt");
+		
+		try {
+			WorkingChunk = new Chunk(myfile1);
+			Level.put(WorkingChunk.getChunkLoc(), WorkingChunk);
+			
+			WorkingChunk = new Chunk(myfile2);
+			Level.put(WorkingChunk.getChunkLoc(), WorkingChunk);
+			
+			WorkingChunk = new Chunk(myfile3);
+			Level.put(WorkingChunk.getChunkLoc(), WorkingChunk);
+			
+			WorkingChunk = new Chunk(myfile4);
+			Level.put(WorkingChunk.getChunkLoc(), WorkingChunk);
+			
+			//OnlyChunk = new Chunk(myfile1);  //in later versions this will be changed to support multiple chunks
+			
+			//Level.put(key, value)
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+	}
+	
+	public void updateDisplay(){
+		Display.updateDisplay(Level,zLevel, xOrg, yOrg, scale); //Method changed to array of chunks in future
+	}
+	
+	
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		UI.clearGraphics();
@@ -69,31 +123,17 @@ public class Core extends MouseAdapter{
 	
 	public void KeyPressed(String Action){
 		
-		if(Action == "Comma"){
+		if(Action == "Period"){
 			if(zLevel<128){
 				zLevel++;
 			}
 		}
-		if(Action == "Period"){
+		if(Action == "Comma"){
 			if(zLevel>0){
 				zLevel--;
 			}
 		}
 		updateDisplay();
-	}
-	
-	public void loadChunks(){
-		UI.println("Loading Chunks");
-		File myfile = new File("c1.txt");
-		try {
-			OnlyChunk = new Chunk(myfile);  //in later versions this will be changed to support multiple chunks
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
-	}
-	
-	public void updateDisplay(){
-		Display.updateDisplay(OnlyChunk,zLevel, xOrg, yOrg, scale); //Method changed to array of chunks in future
 	}
 	
 	@Override
@@ -105,7 +145,7 @@ public class Core extends MouseAdapter{
 		if(Dragging){
 			xOrg = lastxOrg+(event.getX()-lastX);
 			yOrg = lastyOrg+(event.getY()-lastY);
-			System.out.println("IM DRAGGED");
+			//System.out.println("IM DRAGGED");
 			updateDisplay();
 			
 		}
@@ -134,20 +174,19 @@ public class Core extends MouseAdapter{
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
+		System.out.println("Mouse Pressed on button: "+arg0.getButton());
 		if(arg0.getButton() == 2){
 			Dragging = true;
-			System.out.println("Started Dragging");
-		}
-		
-		if(arg0.getButton() == 2){
 			lastX = arg0.getX();
 			lastY = arg0.getY();
 			lastxOrg = xOrg;
 			lastyOrg = yOrg;
 			System.out.println("PRESSED");
 			updateDisplay();
+			System.out.println("Started Dragging");
+		}else{
+			Dragging = false;
 		}
-		
 	}
 
 	@Override

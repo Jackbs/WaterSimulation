@@ -1,5 +1,7 @@
 package Simulation;
 
+import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -11,16 +13,22 @@ import ecs100.UI;
 public class Chunk {
 	
 	public int[][][] Blocks = new int [16][16][128];
+	public Point2D pos;
 	
 	public Chunk(File ChunkFile) throws Exception{
-		System.out.println("Initializing chunk of file: "+ChunkFile.getName());
+		
 		try {
-			int z = 0;
 			Scanner scan = new Scanner(ChunkFile);
+			int z = 0;
+			String line = scan.nextLine();
+			System.out.println("Initializing chunk: "+ ChunkFile.getName()+" With info: "+line);
+			String[] charBlock = line.split(",");
+			pos = new Point(Integer.parseInt(charBlock[0]),Integer.parseInt(charBlock[1]));
 			while (scan.hasNext()){
 				for(int y = 0;y<=15;y++){
-					String line = scan.nextLine();
-					String[] charBlock = line.split(",");
+					line = scan.nextLine();
+					
+					charBlock = line.split(",");
 					if(charBlock.length != 16){
 						throw new Exception(); //Line is longer then 16
 					}
@@ -43,4 +51,9 @@ public class Chunk {
 	public int getBlock(int x,int y,int z){
 		return Blocks[x][y][z];
 	}
+	
+	public Point2D getChunkLoc(){
+		return pos;
+	}
+	
 }
