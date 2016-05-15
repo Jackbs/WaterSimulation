@@ -24,12 +24,12 @@ public class Chunk {
 					if(charBlock.length != 16){
 						throw new Exception(); //Line is longer then 16
 					}
-					System.out.print("CharBlock is: ");
+					//System.out.print("CharBlock is: ");
 					for(int x = 0;x<charBlock.length;x++){
 						Blocks[x][y][z] = Integer.parseInt(charBlock[x]);
-						System.out.print(Blocks[x][y][z]);
+						//System.out.print(Blocks[x][y][z]);
 					}
-					System.out.println(" At Y,Z: "+y+","+z);
+					//System.out.println(" At Y,Z: "+y+","+z);
 				}
 				z++;
 			}
