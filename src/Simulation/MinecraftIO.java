@@ -25,5 +25,6 @@ public class MinecraftIO {
 		for(int i = 0;i<data.length;i++){
 			System.out.println(data[i]);
 		}
+		System.out.println("data.length was: "+data.length);
 	}
 }

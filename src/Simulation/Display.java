@@ -44,7 +44,9 @@ public class Display {
 		
 		UI.setWindowSize((int)width, (int)height);
 		UI.initialise();
+		UI.setDivider(0.15);
 		UI.setImmediateRepaint(false);
+
 		ColorMap.put(0,Color.white);
 		ColorMap.put(1,Color.gray);
 		ColorMap.put(2,Color.green);
@@ -81,15 +83,21 @@ public class Display {
 		UI.setFontSize(20);
 		UI.setColor(Color.WHITE);
 		UI.fillRect(5, 5, xTopWidth, yTopWidth);
+		UI.fillRect(5, 30, 50, 200);
 		UI.setColor(Color.BLACK);
 		UI.drawRect(5, 5, xTopWidth, yTopWidth);
+		UI.drawRect(5, 30, 50, 200);
 		UI.drawString("Level:"+Integer.toString(zLevel), 5, yTopWidth+4);
-		UI.drawString("Scale:"+Double.toString((int)scale), 80, yTopWidth+4);
+		UI.drawString("Scale:"+Double.toString((double) Math.round((scale * 100)) / 100), 80, yTopWidth+4);
 	}
 	
 	public void ShowChunk(Chunk chunk, Point2D Point, int zLevel) { //will be changed to 2D array of chunks in future	
 		double Xchunkoffset = 16*(scale*blksze*Point.getX());
 		double Ychunkoffset = 16*(scale*blksze*Point.getY());
+		UI.setColor(Color.BLACK);
+		UI.fillRect(xOrg, yOrg,5,5);
+
+
 		for(int j = 0;j<16;j++){
 			for(int i = 0;i<16;i++){			
 				int id = chunk.getBlock(i,j,zLevel);

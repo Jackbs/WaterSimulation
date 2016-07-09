@@ -14,6 +14,7 @@ import java.awt.geom.Point2D;
 
 import ecs100.UI;
 import ecs100.UIButtonListener;
+import javax.accessibility.AccessibleContext;
 
 public class Core extends MouseAdapter{
 	
@@ -40,10 +41,10 @@ public class Core extends MouseAdapter{
 	
 	public Core() {
 		
-		MCIO = new MinecraftIO();
-		MCIO.ReadRegion();
+		//MCIO = new MinecraftIO();
+		//MCIO.ReadRegion();
 		
-		/*
+
 		Display = new Display();
 		UI.addButton("Load Chunks", this::loadChunks);
 		UI.addButton("Access random", this::accessrandom);
@@ -55,9 +56,17 @@ public class Core extends MouseAdapter{
 		System.out.println(UI.getFrame().findComponentAt(600, 300).getClass());
 		UI.getFrame().findComponentAt(600, 300).addMouseMotionListener(this);
 		UI.getFrame().findComponentAt(600, 300).addMouseListener(this);
+		AccessibleContext Ac = UI.getFrame().getAccessibleContext();
+
+		System.out.println("Frame info1: "+(Ac.getAccessibleName()));
+		System.out.println("Frame info2: "+(Ac.getAccessibleDescription()));
+		System.out.println("Frame info3: "+(Ac.getAccessibleChildrenCount()));
+		System.out.println("Frame info4: "+(Ac.getAccessibleChild(0).getAccessibleContext().getAccessibleName()));
+
+
 		loadChunks();
 		updateDisplay();
-		*/
+
 	}
 	
 	
@@ -71,9 +80,8 @@ public class Core extends MouseAdapter{
 		OnlyChunk.getBlock(x, y, z);
 		System.out.println("Got Block: "+OnlyChunk.getBlock(x, y, z));
 	}
-	
-	
-	
+
+
 	public void loadChunks(){
 		Chunk WorkingChunk;
 		
@@ -113,10 +121,27 @@ public class Core extends MouseAdapter{
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		UI.clearGraphics();
+        double Xdiff1 = (e.getX()-xOrg)-351.0;
+        double Ydiff1 = (e.getY()-yOrg)-55.0;
+
+
+
+		double Xdiff2 = Xdiff1/scale;
+		double Ydiff2 = Ydiff1/scale;
+
 		scale = scale - 0.2*e.getWheelRotation();
-		if(scale <= 0){
+
+		if(scale < 0.1){
 			scale = 0.1;
 		}
+
+		Xdiff2 = Xdiff2*scale;
+		Ydiff2 = Ydiff2*scale;
+
+		//System.out.println("Xdiff1: "+Xdiff1+" Ydiff1: "+Ydiff1+" Xdiff2: "+Xdiff2+" Ydiff2: "+Ydiff2+" xOrg: "+xOrg+" yOrg: "+ yOrg);
+
+		xOrg = xOrg+(Xdiff1-Xdiff2);
+		yOrg = yOrg+(Ydiff1-Ydiff2);
 		updateDisplay();
 	}
 	
@@ -143,10 +168,12 @@ public class Core extends MouseAdapter{
 			System.out.println("Started Dragging");
 		}
 		if(Dragging){
+			UI.clearGraphics();
 			xOrg = lastxOrg+(event.getX()-lastX);
 			yOrg = lastyOrg+(event.getY()-lastY);
 			//System.out.println("IM DRAGGED");
 			updateDisplay();
+
 			
 		}
 	}
