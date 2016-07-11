@@ -116,10 +116,15 @@ public class Display {
 							Graphics2D g = bimage.createGraphics();
 							g.drawImage(img, 0, 0, null);
 							g.dispose();
-							float scaleFactor = (float)((double)t*hightdarken/(double)zLevel);
-							if(t == 0){
-								scaleFactor = (float)((double)t+0.5/(double)zLevel);
+
+
+							t = t-1;
+							float scaleFactor = (float)((double)(t)*hightdarken/(double)zLevel);
+
+							if(t == 0 || t == -1){
+								scaleFactor = (float)((double)(0)+0.5/(double)zLevel);
 							}
+							t = t+1;
 
 							//UI.println("SF: "+scaleFactor+" t:"+t+" zLevel:"+zLevel+" Actual:"+value);
 							//float scaleFactor = (float)Math.pow(0.6, t);

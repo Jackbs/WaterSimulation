@@ -1,5 +1,6 @@
 package Simulation;
 
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -19,17 +20,16 @@ import javax.accessibility.AccessibleContext;
 public class Core extends MouseAdapter{
 	
 	MinecraftIO MCIO;
-	Display Display;
-	
-	public Chunk OnlyChunk; //Will be changed to array of chunks in future 
+	Display display;
+	FileIO fileIO;
+
 	public int zLevel = 3;
 	
 	boolean Dragging = false;
 	
-	
+	int currentblock = 1;
 	
 	Map <Point2D, Chunk> Level = new HashMap<Point2D, Chunk>();
-	//List<Chunk> list = new ArrayList<Chunk>();
 	
 	double scale = 2.0;
 	double xOrg = 0.0;
@@ -45,17 +45,20 @@ public class Core extends MouseAdapter{
 		//MCIO.ReadRegion();
 		
 
-		Display = new Display();
+		display = new Display();
+		fileIO = new FileIO();
+
 		UI.addButton("Load Chunks", this::loadChunks);
-		UI.addButton("Access random", this::accessrandom);
 		UI.addButton("Update Display", this::updateDisplay);
+		UI.addTextField("Painting Block Type", this::setBlockType);
 		UI.setKeyListener(this::KeyPressed);
 		//UI.setMouseMotionListener(this :: doMouse);
 
+
+
 		UI.getFrame().addMouseWheelListener(this);
 		System.out.println(UI.getFrame().findComponentAt(600, 300).getClass());
-		UI.getFrame().findComponentAt(600, 300).addMouseMotionListener(this);
-		UI.getFrame().findComponentAt(600, 300).addMouseListener(this);
+
 		AccessibleContext Ac = UI.getFrame().getAccessibleContext();
 
 		System.out.println("Frame info1: "+(Ac.getAccessibleName()));
@@ -67,54 +70,37 @@ public class Core extends MouseAdapter{
 		loadChunks();
 		updateDisplay();
 
+		UI.getFrame().findComponentAt(600, 300).addMouseMotionListener(this);
+		UI.getFrame().findComponentAt(600, 300).addMouseListener(this);
+
 	}
 	
-	
-	
-	public void accessrandom(){
+	public void setBlock(int x, int y){
+		double Xdiff = (x-xOrg);
+		double Ydiff = (y-yOrg);
+		Xdiff = (int)(Xdiff/(10*scale));
+		Ydiff = (int)(Ydiff/(10*scale));
+		int chunkX = (int)(Xdiff/16);
+		int chunkY = (int)(Ydiff/16);
+		Xdiff = Xdiff%16;
+		Ydiff = Ydiff%16;
 
-		int x = ThreadLocalRandom.current().nextInt(0, 15 + 1);
-		int y = ThreadLocalRandom.current().nextInt(0, 15 + 1);
-		int z = ThreadLocalRandom.current().nextInt(0, 3 + 1);
-		System.out.println("Access Random: "+x+" "+y+" "+z);
-		OnlyChunk.getBlock(x, y, z);
-		System.out.println("Got Block: "+OnlyChunk.getBlock(x, y, z));
+		Level.get(new Point(chunkX,chunkY));
+		System.out.println("Setting Block at Xdiff1: "+Xdiff+" Ydiff: "+Ydiff+"Chunk X: "+chunkX+" Chunk Y: "+chunkY);
 	}
 
 
 	public void loadChunks(){
-		Chunk WorkingChunk;
-		
-		UI.println("Loading Chunks");
-		File myfile1 = new File("c1.txt");
-		File myfile2 = new File("c2.txt");
-		File myfile3 = new File("c3.txt");
-		File myfile4 = new File("c4.txt");
-		
-		try {
-			WorkingChunk = new Chunk(myfile1);
-			Level.put(WorkingChunk.getChunkLoc(), WorkingChunk);
-			
-			WorkingChunk = new Chunk(myfile2);
-			Level.put(WorkingChunk.getChunkLoc(), WorkingChunk);
-			
-			WorkingChunk = new Chunk(myfile3);
-			Level.put(WorkingChunk.getChunkLoc(), WorkingChunk);
-			
-			WorkingChunk = new Chunk(myfile4);
-			Level.put(WorkingChunk.getChunkLoc(), WorkingChunk);
-			
-			//OnlyChunk = new Chunk(myfile1);  //in later versions this will be changed to support multiple chunks
-			
-			//Level.put(key, value)
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
+		Level = fileIO.loadLevel("world1");
+	}
+
+	public void setBlockType(String s){
+		currentblock = Integer.parseInt(s);
+		System.out.println("Current Block is now: "+currentblock);
 	}
 	
 	public void updateDisplay(){
-		Display.updateDisplay(Level,zLevel, xOrg, yOrg, scale); //Method changed to array of chunks in future
+		display.updateDisplay(Level,zLevel, xOrg, yOrg, scale); //Method changed to array of chunks in future
 	}
 	
 	
@@ -163,6 +149,9 @@ public class Core extends MouseAdapter{
 	
 	@Override
 	 public void mouseDragged(MouseEvent event) {
+		if(event.getButton() == 1){
+			setBlock(event.getX(),event.getY());
+		}
 		if(event.getButton() == 2){
 			Dragging = true;
 			System.out.println("Started Dragging");
@@ -173,8 +162,6 @@ public class Core extends MouseAdapter{
 			yOrg = lastyOrg+(event.getY()-lastY);
 			//System.out.println("IM DRAGGED");
 			updateDisplay();
-
-			
 		}
 	}
 	
@@ -201,7 +188,10 @@ public class Core extends MouseAdapter{
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		System.out.println("Mouse Pressed on button: "+arg0.getButton());
+		//System.out.println("Mouse Pressed on button: "+arg0.getButton());
+		if(arg0.getButton() == 1){
+			setBlock(arg0.getX(),arg0.getY());
+		}
 		if(arg0.getButton() == 2){
 			Dragging = true;
 			lastX = arg0.getX();
