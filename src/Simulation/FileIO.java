@@ -14,9 +14,7 @@ public class FileIO {
 
 
 
-    public FileIO() {
 
-    }
 
     public Map<Point2D, Chunk> loadLevel(String Directory){
 

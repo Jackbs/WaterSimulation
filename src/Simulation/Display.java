@@ -52,6 +52,7 @@ public class Display {
 		ColorMap.put(2,Color.green);
 		ColorMap.put(3,new Color(139,69,19));
 		try {
+
 			ImgMap.put(-1,ImageIO.read(new File("void_top.png")));
 			ImgMap.put(1,ImageIO.read(new File("stone_top.png")));
 			ImgMap.put(2,ImageIO.read(new File("grass_top.png")));
@@ -64,6 +65,31 @@ public class Display {
 		TextureMap.put(1,"stone_top.png");
 		TextureMap.put(2,"grass_top.png");
 		TextureMap.put(3,"dirt_top.png");
+	}
+
+	public void preMakeImg(){
+		/*
+		BufferedImage img = ImgMap.get(id);
+		img = ImgMap.get(chunk.getBlock(i,j,t));
+		BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
+		Graphics2D g = bimage.createGraphics();
+		g.drawImage(img, 0, 0, null);
+		g.dispose();
+
+		t = t-1;
+		float scaleFactor = (float)((double)(t)*hightdarken/(double)zLevel);
+
+		if(t == 0 || t == -1){
+			scaleFactor = (float)((double)(0)+0.5/(double)zLevel);
+		}
+		t = t+1;
+
+		//UI.println("SF: "+scaleFactor+" t:"+t+" zLevel:"+zLevel+" Actual:"+value);
+		//float scaleFactor = (float)Math.pow(0.6, t);
+		RescaleOp op = new RescaleOp(scaleFactor, 0, null);
+		bimage = op.filter(bimage, null);
+		img = bimage;
+		*/
 	}
 	
 	public void updateDisplay(Map<Point2D, Chunk> level, int zLevel, double x, double y, double scale) {
@@ -105,34 +131,34 @@ public class Display {
 				BufferedImage img = ImgMap.get(id);
 				UI.setColor(ColorMap.get(id));
 				boolean foundblock = false;
-				if(id == 0){
+				if(id == 0){ //never going to happen, this if not used for now
 					foundblock = false;
 					for(int t = zLevel;t>=0;t--){
 						if(chunk.getBlock(i,j,t) != 0){
 							foundblock = true;
-							UI.setColor(ColorMap.get(chunk.getBlock(i,j,t)).darker());
-							img = ImgMap.get(chunk.getBlock(i,j,t));					
+
+							img = ImgMap.get(chunk.getBlock(i,j,t));
 							BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
 							Graphics2D g = bimage.createGraphics();
 							g.drawImage(img, 0, 0, null);
 							g.dispose();
 
-
-							t = t-1;
-							float scaleFactor = (float)((double)(t)*hightdarken/(double)zLevel);
-
+							UI.println(zLevel+1-t);
+							float scaleFactor = (float)(((double)hightdarken)/(zLevel+1-t)*0.5);
+							//UI.println(scaleFactor);
+							/*
 							if(t == 0 || t == -1){
 								scaleFactor = (float)((double)(0)+0.5/(double)zLevel);
 							}
-							t = t+1;
+							*/
+
 
 							//UI.println("SF: "+scaleFactor+" t:"+t+" zLevel:"+zLevel+" Actual:"+value);
 							//float scaleFactor = (float)Math.pow(0.6, t);
 							RescaleOp op = new RescaleOp(scaleFactor, 0, null);
 							bimage = op.filter(bimage, null);
 							img = bimage;
-						    
-							Texture = (TextureMap.get(chunk.getBlock(i,j,t)));							
+
 							break;
 						}
 					}

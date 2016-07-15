@@ -19,13 +19,13 @@ import javax.accessibility.AccessibleContext;
 
 public class Core extends MouseAdapter{
 	
-	MinecraftIO MCIO;
+	//MinecraftIO MCIO;
 	Display display;
 	FileIO fileIO;
 
 	public int zLevel = 3;
 	
-	boolean Dragging = false;
+	int Dragging = 0; //0 if not dragging, 1 if mouse 1 dragging, 2 if mouse 2 dragging, ect
 	
 	int currentblock = 1;
 	
@@ -85,8 +85,9 @@ public class Core extends MouseAdapter{
 		Xdiff = Xdiff%16;
 		Ydiff = Ydiff%16;
 
-		Level.get(new Point(chunkX,chunkY));
-		System.out.println("Setting Block at Xdiff1: "+Xdiff+" Ydiff: "+Ydiff+"Chunk X: "+chunkX+" Chunk Y: "+chunkY);
+		Level.get(new Point(chunkX,chunkY)).setBlock((int)Xdiff,(int)Ydiff,zLevel,currentblock);
+		//System.out.println("Setting Block at Xdiff1: "+Xdiff+" Ydiff: "+Ydiff+"Chunk X: "+chunkX+" Chunk Y: "+chunkY);
+		updateDisplay();
 	}
 
 
@@ -149,14 +150,14 @@ public class Core extends MouseAdapter{
 	
 	@Override
 	 public void mouseDragged(MouseEvent event) {
-		if(event.getButton() == 1){
+		int button = event.getButton();
+		//System.out.println("IM DRAGGED: "+Dragging);
+		if(Dragging == 1){
 			setBlock(event.getX(),event.getY());
+
 		}
-		if(event.getButton() == 2){
-			Dragging = true;
-			System.out.println("Started Dragging");
-		}
-		if(Dragging){
+
+		if(Dragging == 2){
 			UI.clearGraphics();
 			xOrg = lastxOrg+(event.getX()-lastX);
 			yOrg = lastyOrg+(event.getY()-lastY);
@@ -173,10 +174,11 @@ public class Core extends MouseAdapter{
 	public void mouseClicked(MouseEvent e) {
 		if(e.getButton() == 2){
 			System.out.println("Stopped Dragging");
-			Dragging = false;
+			Dragging = 0;
 		}
 	}
 
+	/*
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 	}
@@ -185,15 +187,16 @@ public class Core extends MouseAdapter{
 	public void mouseExited(MouseEvent arg0) {
 
 	}
+	*/
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		//System.out.println("Mouse Pressed on button: "+arg0.getButton());
-		if(arg0.getButton() == 1){
-			setBlock(arg0.getX(),arg0.getY());
-		}
-		if(arg0.getButton() == 2){
-			Dragging = true;
+		if(arg0.getButton() == 1) {
+			setBlock(arg0.getX(), arg0.getY());
+			Dragging = 1;
+		}else if(arg0.getButton() == 2){
+			Dragging = 2;
 			lastX = arg0.getX();
 			lastY = arg0.getY();
 			lastxOrg = xOrg;
@@ -202,7 +205,7 @@ public class Core extends MouseAdapter{
 			updateDisplay();
 			System.out.println("Started Dragging");
 		}else{
-			Dragging = false;
+			Dragging = 0;
 		}
 	}
 
@@ -211,20 +214,10 @@ public class Core extends MouseAdapter{
 		UI.clearGraphics();
 		updateDisplay();
 	}
-	
-	
-	
-	
-	
 
 
 	public static void main(String[] args) {
 		Core c = new Core();
 	}
-
-	
-
-	
-	
 
 }
