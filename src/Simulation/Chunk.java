@@ -12,7 +12,7 @@ import ecs100.UI;
 
 public class Chunk {
 	
-	private int[][][] Blocks = new int [16][16][128];
+	private Block[][][] Blocks = new Block [16][16][128];
 	private Point2D pos;
 	
 	public Chunk(File ChunkFile) throws Exception{
@@ -34,7 +34,7 @@ public class Chunk {
 					}
 					//System.out.print("CharBlock is: ");
 					for(int x = 0;x<charBlock.length;x++){
-						setBlock(x,y,z,Integer.parseInt(charBlock[x]));
+						setBlock(x,y,z,new BasicBlock(Integer.parseInt(charBlock[x])));
 
 						//System.out.print(Blocks[x][y][z]);
 					}
@@ -49,11 +49,11 @@ public class Chunk {
 		}	
 	}
 	
-	public int getBlock(int x,int y,int z){
+	public Block getBlock(int x,int y,int z){
 		return Blocks[x][y][z];
 	}
 
-	public void setBlock(int x,int y,int z,int id){Blocks[x][y][z] = id;}
+	public void setBlock(int x,int y,int z,Block block){Blocks[x][y][z] = block;}
 
 	public Point2D getChunkLoc(){
 		return pos;

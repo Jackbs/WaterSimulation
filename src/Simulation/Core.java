@@ -85,7 +85,7 @@ public class Core extends MouseAdapter{
 		Xdiff = Xdiff%16;
 		Ydiff = Ydiff%16;
 
-		Level.get(new Point(chunkX,chunkY)).setBlock((int)Xdiff,(int)Ydiff,zLevel,currentblock);
+		Level.get(new Point(chunkX,chunkY)).setBlock((int)Xdiff,(int)Ydiff,zLevel,new BasicBlock(currentblock));
 		//System.out.println("Setting Block at Xdiff1: "+Xdiff+" Ydiff: "+Ydiff+"Chunk X: "+chunkX+" Chunk Y: "+chunkY);
 		updateDisplay();
 	}

@@ -21,7 +21,7 @@ import javax.imageio.ImageIO;
 import ecs100.UI;
 
 public class Display {
-	Map<Integer, BufferedImage> ImgMap = new HashMap<Integer, BufferedImage>();
+	Map<Block, BlockRender> ImgMap = new HashMap<Block, BlockRender>();
 	Map<Integer, String> TextureMap = new HashMap<Integer, String>();
 	Map<Integer, Color> ColorMap = new HashMap<Integer, Color>();
 	
@@ -47,20 +47,21 @@ public class Display {
 		UI.setDivider(0.15);
 		UI.setImmediateRepaint(false);
 
-		ColorMap.put(0,Color.white);
-		ColorMap.put(1,Color.gray);
-		ColorMap.put(2,Color.green);
-		ColorMap.put(3,new Color(139,69,19));
-		try {
 
-			ImgMap.put(-1,ImageIO.read(new File("void_top.png")));
-			ImgMap.put(1,ImageIO.read(new File("stone_top.png")));
-			ImgMap.put(2,ImageIO.read(new File("grass_top.png")));
-			ImgMap.put(3,ImageIO.read(new File("dirt_top.png")));
-			
+		try {
+			ImgMap.put(new BasicBlock(-1),new BlockRender(ImageIO.read(new File("void_top.png"))));
+			ImgMap.put(new BasicBlock(1),new BlockRender(ImageIO.read(new File("stone_top.png"))));
+			ImgMap.put(new BasicBlock(2),new BlockRender(ImageIO.read(new File("grass_top.png"))));
+			ImgMap.put(new BasicBlock(3),new BlockRender(ImageIO.read(new File("dirt_top.png"))));
+
+			//ImgMap.put(new BasicBlock(-1),new BufferedImage[]{null,ImageIO.read(new File("void_top.png"))});
+			//ImgMap.put(new BasicBlock(1),new BufferedImage[]{null,ImageIO.read(new File("stone_top.png"))});
+			//ImgMap.put(new BasicBlock(2),new BufferedImage[]{null,ImageIO.read(new File("grass_top.png"))});
+			//ImgMap.put(new BasicBlock(3),new BufferedImage[]{null,ImageIO.read(new File("dirt_top.png"))});
+
 			} catch (IOException e) {
 		}
-		
+
 		TextureMap.put(-1,"void_top.png");
 		TextureMap.put(1,"stone_top.png");
 		TextureMap.put(2,"grass_top.png");
@@ -126,44 +127,27 @@ public class Display {
 
 		for(int j = 0;j<16;j++){
 			for(int i = 0;i<16;i++){			
-				int id = chunk.getBlock(i,j,zLevel);
-				String Texture = (TextureMap.get(id));
-				BufferedImage img = ImgMap.get(id);
-				UI.setColor(ColorMap.get(id));
+				Block workingBlock = chunk.getBlock(i,j,zLevel);
+
+				//BufferedImage img = workingBlock.getImage(1); //Get the basic image
+				System.out.println("Working Block ID: "+workingBlock.getId()+" Type: "+ImgMap.get(workingBlock));
+
+				BufferedImage img = (ImgMap.get(workingBlock)).GetNormalImage(1);
+
 				boolean foundblock = false;
-				if(id == 0){ //never going to happen, this if not used for now
+				if(workingBlock.getId() == 0){
 					foundblock = false;
 					for(int t = zLevel;t>=0;t--){
-						if(chunk.getBlock(i,j,t) != 0){
+						if(chunk.getBlock(i,j,t).getId() != 0){
 							foundblock = true;
 
-							img = ImgMap.get(chunk.getBlock(i,j,t));
-							BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
-							Graphics2D g = bimage.createGraphics();
-							g.drawImage(img, 0, 0, null);
-							g.dispose();
-
-							UI.println(zLevel+1-t);
-							float scaleFactor = (float)(((double)hightdarken)/(zLevel+1-t)*0.5);
-							//UI.println(scaleFactor);
-							/*
-							if(t == 0 || t == -1){
-								scaleFactor = (float)((double)(0)+0.5/(double)zLevel);
-							}
-							*/
-
-
-							//UI.println("SF: "+scaleFactor+" t:"+t+" zLevel:"+zLevel+" Actual:"+value);
-							//float scaleFactor = (float)Math.pow(0.6, t);
-							RescaleOp op = new RescaleOp(scaleFactor, 0, null);
-							bimage = op.filter(bimage, null);
-							img = bimage;
+							img = ImgMap.get(chunk.getBlock(i,j,t)).GetNormalImage(zLevel+1-t);
 
 							break;
 						}
 					}
 					if(!foundblock){
-						img = ImgMap.get(-1);
+						img = ImgMap.get(new BasicBlock(-1)).GetNormalImage(1);
 
 					}
 				}
