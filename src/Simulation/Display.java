@@ -3,14 +3,9 @@
 package Simulation;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -21,7 +16,7 @@ import javax.imageio.ImageIO;
 import ecs100.UI;
 
 public class Display {
-	Map<Block, BlockRender> ImgMap = new HashMap<Block, BlockRender>();
+	Map<Block, BlockRender> ImgMap = new HashMap<>();
 	Map<Integer, String> TextureMap = new HashMap<Integer, String>();
 	Map<Integer, Color> ColorMap = new HashMap<Integer, Color>();
 	
@@ -37,17 +32,20 @@ public class Display {
 	double xOrg;
 	double yOrg;
 	
-	public Display(){
+	public Display() {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double width = 1366; //screenSize.getWidth();
 		double height = 768; //screenSize.getHeight();
-		
-		UI.setWindowSize((int)width, (int)height);
+
+		UI.setWindowSize((int) width, (int) height);
 		UI.initialise();
 		UI.setDivider(0.15);
 		UI.setImmediateRepaint(false);
 
+		CreateBlockRenders();
+	}
 
+	private void CreateBlockRenders(){
 		try {
 			ImgMap.put(new BasicBlock(-1),new BlockRender(ImageIO.read(new File("void_top.png"))));
 			ImgMap.put(new BasicBlock(1),new BlockRender(ImageIO.read(new File("stone_top.png"))));
@@ -59,7 +57,8 @@ public class Display {
 			//ImgMap.put(new BasicBlock(2),new BufferedImage[]{null,ImageIO.read(new File("grass_top.png"))});
 			//ImgMap.put(new BasicBlock(3),new BufferedImage[]{null,ImageIO.read(new File("dirt_top.png"))});
 
-			} catch (IOException e) {
+		} catch (IOException e) {
+
 		}
 
 		TextureMap.put(-1,"void_top.png");
@@ -67,6 +66,9 @@ public class Display {
 		TextureMap.put(2,"grass_top.png");
 		TextureMap.put(3,"dirt_top.png");
 	}
+
+
+
 
 	public void preMakeImg(){
 		/*
@@ -130,7 +132,7 @@ public class Display {
 				Block workingBlock = chunk.getBlock(i,j,zLevel);
 
 				//BufferedImage img = workingBlock.getImage(1); //Get the basic image
-				System.out.println("Working Block ID: "+workingBlock.getId()+" Type: "+ImgMap.get(workingBlock));
+				System.out.println("WorkingBlocktype: "+workingBlock.getClass()+" Working Block ID: "+workingBlock.getId()+" Type: "+ImgMap.get(workingBlock));
 
 				BufferedImage img = (ImgMap.get(workingBlock)).GetNormalImage(1);
 
