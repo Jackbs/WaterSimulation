@@ -2,19 +2,13 @@ package Simulation;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import java.awt.event.MouseAdapter;
 import java.awt.geom.Point2D;
 
 import ecs100.UI;
-import ecs100.UIButtonListener;
+
 import javax.accessibility.AccessibleContext;
 
 public class Core extends MouseAdapter{
@@ -25,8 +19,9 @@ public class Core extends MouseAdapter{
 
 	public int zLevel = 3;
 	
-	int Dragging = 0; //0 if not dragging, 1 if mouse 1 dragging, 2 if mouse 2 dragging, ect
-	
+	private int Dragging = 0; //0 if not dragging, 1 if mouse 1 dragging, 2 if mouse 2 dragging, ect
+	private int size = 1;
+
 	int currentblock = 1;
 	
 	Map <Point2D, Chunk> Level = new HashMap<Point2D, Chunk>();
@@ -50,7 +45,7 @@ public class Core extends MouseAdapter{
 
 		UI.addButton("Load Chunks", this::loadChunks);
 		UI.addButton("Update Display", this::updateDisplay);
-		UI.addTextField("Painting Block Type", this::setBlockType);
+		UI.addTextField("Brush size", this::setBlockSize);
 		UI.setKeyListener(this::KeyPressed);
 		//UI.setMouseMotionListener(this :: doMouse);
 
@@ -74,8 +69,17 @@ public class Core extends MouseAdapter{
 		UI.getFrame().findComponentAt(600, 300).addMouseListener(this);
 
 	}
-	
-	public void setBlock(int x, int y){
+
+	private void setBlockSize(String s) {
+		size = Integer.parseInt(s);
+		System.out.println("Current Brush size is now: "+ size);
+	}
+
+
+
+
+	public void setBlock(int x, int y, int xOffset, int yOffset){
+
 		double Xdiff = (x-xOrg);
 		double Ydiff = (y-yOrg);
 		Xdiff = (int)(Xdiff/(10*scale));
@@ -85,8 +89,29 @@ public class Core extends MouseAdapter{
 		Xdiff = Xdiff%16;
 		Ydiff = Ydiff%16;
 
-		Level.get(new Point(chunkX,chunkY)).setBlock((int)Xdiff,(int)Ydiff,zLevel,new BasicBlock(currentblock));
-		//System.out.println("Setting Block at Xdiff1: "+Xdiff+" Ydiff: "+Ydiff+"Chunk X: "+chunkX+" Chunk Y: "+chunkY);
+
+
+		System.out.println("Setting Block ID: "+currentblock+" Xdiff1: "+Xdiff+" Ydiff: "+Ydiff+"Chunk X: "+chunkX+" Chunk Y: "+chunkY);
+		Level.get(new Point(chunkX,chunkY)).setBlock((int)Xdiff+xOffset,(int)Ydiff+yOffset,zLevel,new BasicBlock(currentblock));
+	}
+
+
+	public void paintBlocks(int x, int y){
+		setBlock(x, y,0,0);
+		if(size != 1){
+			for(int i = 1;i<size;i++){
+				System.out.println("help: "+i+" x: "+x+" y: "+y);
+				setBlock(x,y,i,0);
+				setBlock(x,y,-i,0);
+				setBlock(x,y,0,i);
+				setBlock(x,y,0,-i);
+
+				setBlock(x,y,i,i);
+				setBlock(x,y,-i,i);
+				setBlock(x,y,i,-i);
+				setBlock(x,y,-i,-i);
+			}
+		}
 		updateDisplay();
 	}
 
@@ -134,13 +159,15 @@ public class Core extends MouseAdapter{
 	
 	
 	public void KeyPressed(String Action){
-		
-		if(Action == "Period"){
+		System.out.println("Key Pressed:: "+Action);
+
+		if(isInteger(Action)){
+			setBlockType(Action);
+		}else if(Action == "Period"){
 			if(zLevel<128){
 				zLevel++;
 			}
-		}
-		if(Action == "Comma"){
+		}else if(Action == "Comma"){
 			if(zLevel>0){
 				zLevel--;
 			}
@@ -153,8 +180,7 @@ public class Core extends MouseAdapter{
 		int button = event.getButton();
 		//System.out.println("IM DRAGGED: "+Dragging);
 		if(Dragging == 1){
-			setBlock(event.getX(),event.getY());
-
+			paintBlocks(event.getX(),event.getY());
 		}
 
 		if(Dragging == 2){
@@ -193,7 +219,7 @@ public class Core extends MouseAdapter{
 	public void mousePressed(MouseEvent arg0) {
 		//System.out.println("Mouse Pressed on button: "+arg0.getButton());
 		if(arg0.getButton() == 1) {
-			setBlock(arg0.getX(), arg0.getY());
+			paintBlocks(arg0.getX(), arg0.getY());
 			Dragging = 1;
 		}else if(arg0.getButton() == 2){
 			Dragging = 2;
@@ -201,7 +227,7 @@ public class Core extends MouseAdapter{
 			lastY = arg0.getY();
 			lastxOrg = xOrg;
 			lastyOrg = yOrg;
-			System.out.println("PRESSED");
+			//System.out.println("PRESSED");
 			updateDisplay();
 			System.out.println("Started Dragging");
 		}else{
@@ -213,6 +239,16 @@ public class Core extends MouseAdapter{
 	public void mouseReleased(MouseEvent arg0) {
 		UI.clearGraphics();
 		updateDisplay();
+	}
+
+	public boolean isInteger( String input ) {
+		try {
+			Integer.parseInt( input );
+			return true;
+		}
+		catch( Exception e ) {
+			return false;
+		}
 	}
 
 

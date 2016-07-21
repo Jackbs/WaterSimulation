@@ -23,7 +23,7 @@ public class Display {
 	double topXscale = 0.3;
 	double topYscale = 0.026;
 	
-	float hightdarken = 1.9f;
+
 	
 	int blksze = 10;
 	
@@ -72,26 +72,7 @@ public class Display {
 
 	public void preMakeImg(){
 		/*
-		BufferedImage img = ImgMap.get(id);
-		img = ImgMap.get(chunk.getBlock(i,j,t));
-		BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
-		Graphics2D g = bimage.createGraphics();
-		g.drawImage(img, 0, 0, null);
-		g.dispose();
 
-		t = t-1;
-		float scaleFactor = (float)((double)(t)*hightdarken/(double)zLevel);
-
-		if(t == 0 || t == -1){
-			scaleFactor = (float)((double)(0)+0.5/(double)zLevel);
-		}
-		t = t+1;
-
-		//UI.println("SF: "+scaleFactor+" t:"+t+" zLevel:"+zLevel+" Actual:"+value);
-		//float scaleFactor = (float)Math.pow(0.6, t);
-		RescaleOp op = new RescaleOp(scaleFactor, 0, null);
-		bimage = op.filter(bimage, null);
-		img = bimage;
 		*/
 	}
 	
@@ -132,20 +113,28 @@ public class Display {
 				Block workingBlock = chunk.getBlock(i,j,zLevel);
 
 				//BufferedImage img = workingBlock.getImage(1); //Get the basic image
-				System.out.println("WorkingBlocktype: "+workingBlock.getClass()+" Working Block ID: "+workingBlock.getId()+" Type: "+ImgMap.get(workingBlock));
+				//System.out.println("WorkingBlocktype: "+workingBlock.getClass()+" Working Block ID: "+workingBlock.getId()+" Type: "+ImgMap.get(workingBlock));
 
-				BufferedImage img = (ImgMap.get(workingBlock)).GetNormalImage(1);
 
 				boolean foundblock = false;
-				if(workingBlock.getId() == 0){
+				BufferedImage img = null;
+				if((workingBlock != null) && (workingBlock.getId() != 0)) {
+					img = (ImgMap.get(workingBlock)).GetNormalImage(1);
+
+				}else{
+
 					foundblock = false;
 					for(int t = zLevel;t>=0;t--){
-						if(chunk.getBlock(i,j,t).getId() != 0){
-							foundblock = true;
 
-							img = ImgMap.get(chunk.getBlock(i,j,t)).GetNormalImage(zLevel+1-t);
+						if(chunk.getBlock(i,j,t) != null) {
+							if(chunk.getBlock(i,j,t).getId() != 0) {
+								foundblock = true;
 
-							break;
+								img = ImgMap.get(chunk.getBlock(i, j, t)).GetNormalImage(zLevel + 1 - t);
+								//img = ImgMap.get(chunk.getBlock(i,j,t)).GetNormalImage(1);
+
+								break;
+							}
 						}
 					}
 					if(!foundblock){
@@ -154,8 +143,9 @@ public class Display {
 					}
 				}
 				
-				
-				UI.drawImage(img, Xchunkoffset+(scale*i*blksze+xOrg), Ychunkoffset+scale*j*blksze+yOrg, blksze*scale*1.1, blksze*scale*1.1);
+				if(img != null) {
+					UI.drawImage(img, Xchunkoffset + (scale * i * blksze + xOrg), Ychunkoffset + scale * j * blksze + yOrg, blksze * scale * 1.1, blksze * scale * 1.1);
+				}
 				//UI.drawImage(Texture, i*blksze, j*blksze, blksze, blksze);
 				//UI.fillRect(i*blksze, j*blksze, blksze, blksze);
 			}
