@@ -107,11 +107,13 @@ public class Core extends MouseAdapter{
 		level.setBlock(blkloc,getCurrentBlock());
 
 		if(size != 1){
-			for(int i = 1;i<size;i++){
-				level.setBlock(blkloc.offsetBlkLoc(i,0),getCurrentBlock());
-				level.setBlock(blkloc.offsetBlkLoc(-i,0),getCurrentBlock());
-				level.setBlock(blkloc.offsetBlkLoc(0,i),getCurrentBlock());
-				level.setBlock(blkloc.offsetBlkLoc(0,-i),getCurrentBlock());
+			for(int i = -size+1;i<size;i++){
+				for(int j = -size+1;j<size;j++) {
+					System.out.println("Distance: "+blkloc.distance(blkloc.offsetBlkLoc(i, j)));
+					if(blkloc.distance(blkloc.offsetBlkLoc(i, j))<(0.85*size)) {
+						level.setBlock(blkloc.offsetBlkLoc(i, j), getCurrentBlock());
+					}
+				}
 			}
 		}
 

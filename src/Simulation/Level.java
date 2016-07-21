@@ -30,6 +30,8 @@ public class Level {
 
     public void setBlock(BlockLocation blkloc, Block b) {
         //System.out.println("Setting Block of type: "+b.getId()+" [x:"+blkloc.x+" y:"+ blkloc.y + " z:"+blkloc.z+" ]");
-        level.get(blkloc.p).setBlock(blkloc.x,blkloc.y,blkloc.z,b);
+        if(level.containsKey(blkloc.p)) {
+            level.get(blkloc.p).setBlock(blkloc.x, blkloc.y, blkloc.z, b);
+        }
     }
 }
