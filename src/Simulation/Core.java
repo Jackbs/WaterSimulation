@@ -95,15 +95,23 @@ public class Core extends MouseAdapter{
 		return new BlockLocation((int)Xdiff,(int)Ydiff,zLevel,new Point(chunkX,chunkY));
 	}
 
+	public Block getCurrentBlock(){
+		if(currentblock == 5){
+			return new WaterBlock(currentblock);
+		}else {
+			return new BasicBlock(currentblock);
+		}
+	}
+
 	public void paintBlocks(BlockLocation blkloc){
-		level.setBlock(blkloc,new BasicBlock(currentblock));
+		level.setBlock(blkloc,getCurrentBlock());
 
 		if(size != 1){
 			for(int i = 1;i<size;i++){
-				level.setBlock(blkloc.offsetBlkLoc(i,0),new BasicBlock(currentblock));
-				level.setBlock(blkloc.offsetBlkLoc(-i,0),new BasicBlock(currentblock));
-				level.setBlock(blkloc.offsetBlkLoc(0,i),new BasicBlock(currentblock));
-				level.setBlock(blkloc.offsetBlkLoc(0,-i),new BasicBlock(currentblock));
+				level.setBlock(blkloc.offsetBlkLoc(i,0),getCurrentBlock());
+				level.setBlock(blkloc.offsetBlkLoc(-i,0),getCurrentBlock());
+				level.setBlock(blkloc.offsetBlkLoc(0,i),getCurrentBlock());
+				level.setBlock(blkloc.offsetBlkLoc(0,-i),getCurrentBlock());
 			}
 		}
 

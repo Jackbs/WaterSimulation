@@ -1,5 +1,6 @@
 package Simulation;
 
+import java.awt.*;
 import java.awt.geom.Point2D;
 
 /**
@@ -17,8 +18,20 @@ public class BlockLocation {
         this.p = p;
     }
     public BlockLocation offsetBlkLoc(int x,int y){
-
-        return new BlockLocation(this.x+x,this.y+y,this.z,this.p);
+        Point2D thisp = this.p;
+        if((this.x+x)>15){
+            thisp = new Point(1+(int)thisp.getX(),(int)thisp.getY());
+        }
+        if((this.x+x)<0){
+            thisp = new Point(((int)thisp.getX())-1,(int)thisp.getY());
+        }
+        if((this.y+y)>15){
+            thisp = new Point((int)thisp.getX(),1+(int)thisp.getY());
+        }
+        if((this.y+y)<0){
+            thisp = new Point((int)thisp.getX(),((int)thisp.getY())-1);
+        }
+        return new BlockLocation(this.x+x,this.y+y,this.z,thisp);
 
     }
 }

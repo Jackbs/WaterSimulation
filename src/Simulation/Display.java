@@ -51,6 +51,7 @@ public class Display {
 			ImgMap.put(new BasicBlock(1),new BlockRender(ImageIO.read(new File("stone_top.png"))));
 			ImgMap.put(new BasicBlock(2),new BlockRender(ImageIO.read(new File("grass_top.png"))));
 			ImgMap.put(new BasicBlock(3),new BlockRender(ImageIO.read(new File("dirt_top.png"))));
+			ImgMap.put(new WaterBlock(5),new BlockRender(ImageIO.read(new File("water_top.png"))));
 
 			//ImgMap.put(new BasicBlock(-1),new BufferedImage[]{null,ImageIO.read(new File("void_top.png"))});
 			//ImgMap.put(new BasicBlock(1),new BufferedImage[]{null,ImageIO.read(new File("stone_top.png"))});
@@ -61,10 +62,7 @@ public class Display {
 
 		}
 
-		TextureMap.put(-1,"void_top.png");
-		TextureMap.put(1,"stone_top.png");
-		TextureMap.put(2,"grass_top.png");
-		TextureMap.put(3,"dirt_top.png");
+
 	}
 
 

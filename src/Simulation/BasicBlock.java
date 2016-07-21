@@ -9,7 +9,7 @@ import java.util.Arrays;
 public class BasicBlock implements Block{
 
     private int id;
-    private BufferedImage[] renderedblocks = new BufferedImage[10];
+
 
     public BasicBlock(int id){
         this.id = id;
@@ -20,9 +20,6 @@ public class BasicBlock implements Block{
         return id;
     }
 
-    public BufferedImage getImage(int imagenumber) {
-        return renderedblocks[imagenumber];
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -31,7 +28,7 @@ public class BasicBlock implements Block{
 
         BasicBlock that = (BasicBlock) o;
 
-        return id == that.id;
+        return id == that.getId();
 
     }
 
