@@ -15,7 +15,7 @@ public class Core extends MouseAdapter{
 	
 	//MinecraftIO MCIO;
 	Display display;
-	FileIO fileIO;
+
 
 	public int zLevel = 3;
 	
@@ -23,8 +23,9 @@ public class Core extends MouseAdapter{
 	private int size = 1;
 
 	int currentblock = 1;
-	
-	Map <Point2D, Chunk> Level = new HashMap<Point2D, Chunk>();
+
+	Level level;
+	//
 	
 	double scale = 2.0;
 	double xOrg = 0.0;
@@ -38,12 +39,12 @@ public class Core extends MouseAdapter{
 		
 		//MCIO = new MinecraftIO();
 		//MCIO.ReadRegion();
-		
+
+
 
 		display = new Display();
-		fileIO = new FileIO();
 
-		UI.addButton("Load Chunks", this::loadChunks);
+		//UI.addButton("Load Chunks", this::loadChunks);
 		UI.addButton("Update Display", this::updateDisplay);
 		UI.addTextField("Brush size", this::setBlockSize);
 		UI.setKeyListener(this::KeyPressed);
@@ -62,7 +63,8 @@ public class Core extends MouseAdapter{
 		System.out.println("Frame info4: "+(Ac.getAccessibleChild(0).getAccessibleContext().getAccessibleName()));
 
 
-		loadChunks();
+		level = new Level("world1");
+
 		updateDisplay();
 
 		UI.getFrame().findComponentAt(600, 300).addMouseMotionListener(this);
@@ -78,47 +80,37 @@ public class Core extends MouseAdapter{
 
 
 
-	public void setBlock(int x, int y, int xOffset, int yOffset){
 
-		double Xdiff = (x-xOrg);
-		double Ydiff = (y-yOrg);
+
+	public BlockLocation BlockLocFromMouse(int xMouse, int yMouse){
+		double Xdiff = (xMouse-xOrg);
+		double Ydiff = (yMouse-yOrg);
 		Xdiff = (int)(Xdiff/(10*scale));
 		Ydiff = (int)(Ydiff/(10*scale));
 		int chunkX = (int)(Xdiff/16);
 		int chunkY = (int)(Ydiff/16);
 		Xdiff = Xdiff%16;
 		Ydiff = Ydiff%16;
-
-
-
-		System.out.println("Setting Block ID: "+currentblock+" Xdiff1: "+Xdiff+" Ydiff: "+Ydiff+"Chunk X: "+chunkX+" Chunk Y: "+chunkY);
-		Level.get(new Point(chunkX,chunkY)).setBlock((int)Xdiff+xOffset,(int)Ydiff+yOffset,zLevel,new BasicBlock(currentblock));
+		//System.out.println("Setting Block ID: "+currentblock+" Xdiff1: "+Xdiff+" Ydiff: "+Ydiff+"Chunk X: "+chunkX+" Chunk Y: "+chunkY);
+		return new BlockLocation((int)Xdiff,(int)Ydiff,zLevel,new Point(chunkX,chunkY));
 	}
 
+	public void paintBlocks(BlockLocation blkloc){
+		level.setBlock(blkloc,new BasicBlock(currentblock));
 
-	public void paintBlocks(int x, int y){
-		setBlock(x, y,0,0);
 		if(size != 1){
 			for(int i = 1;i<size;i++){
-				System.out.println("help: "+i+" x: "+x+" y: "+y);
-				setBlock(x,y,i,0);
-				setBlock(x,y,-i,0);
-				setBlock(x,y,0,i);
-				setBlock(x,y,0,-i);
-
-				setBlock(x,y,i,i);
-				setBlock(x,y,-i,i);
-				setBlock(x,y,i,-i);
-				setBlock(x,y,-i,-i);
+				level.setBlock(blkloc.offsetBlkLoc(i,0),new BasicBlock(currentblock));
+				level.setBlock(blkloc.offsetBlkLoc(-i,0),new BasicBlock(currentblock));
+				level.setBlock(blkloc.offsetBlkLoc(0,i),new BasicBlock(currentblock));
+				level.setBlock(blkloc.offsetBlkLoc(0,-i),new BasicBlock(currentblock));
 			}
 		}
+
 		updateDisplay();
 	}
 
 
-	public void loadChunks(){
-		Level = fileIO.loadLevel("world1");
-	}
 
 	public void setBlockType(String s){
 		currentblock = Integer.parseInt(s);
@@ -126,7 +118,7 @@ public class Core extends MouseAdapter{
 	}
 	
 	public void updateDisplay(){
-		display.updateDisplay(Level,zLevel, xOrg, yOrg, scale); //Method changed to array of chunks in future
+		display.updateDisplay(level,zLevel, xOrg, yOrg, scale); //Method changed to array of chunks in future
 	}
 	
 	
@@ -180,7 +172,7 @@ public class Core extends MouseAdapter{
 		int button = event.getButton();
 		//System.out.println("IM DRAGGED: "+Dragging);
 		if(Dragging == 1){
-			paintBlocks(event.getX(),event.getY());
+			paintBlocks(BlockLocFromMouse(event.getX(),event.getY()));
 		}
 
 		if(Dragging == 2){
@@ -219,7 +211,7 @@ public class Core extends MouseAdapter{
 	public void mousePressed(MouseEvent arg0) {
 		//System.out.println("Mouse Pressed on button: "+arg0.getButton());
 		if(arg0.getButton() == 1) {
-			paintBlocks(arg0.getX(), arg0.getY());
+			paintBlocks(BlockLocFromMouse(arg0.getX(), arg0.getY()));
 			Dragging = 1;
 		}else if(arg0.getButton() == 2){
 			Dragging = 2;

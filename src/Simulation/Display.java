@@ -76,11 +76,12 @@ public class Display {
 		*/
 	}
 	
-	public void updateDisplay(Map<Point2D, Chunk> level, int zLevel, double x, double y, double scale) {
+	public void updateDisplay(Level level, int zLevel, double x, double y, double scale) {
 		this.xOrg = x;
 		this.yOrg = y;		
 		this.scale = scale;
-		level.forEach( (k,v) -> ShowChunk(v,k, zLevel) );
+
+		level.getLevelmap().forEach( (k,v) -> ShowChunk(v,k, zLevel) );
 		
 		//ShowChunk(level, zLevel);
 		ShowUI(zLevel);
@@ -97,7 +98,7 @@ public class Display {
 		UI.setColor(Color.BLACK);
 		UI.drawRect(5, 5, xTopWidth, yTopWidth);
 		UI.drawRect(5, 30, 50, 200);
-		UI.drawString("Level:"+Integer.toString(zLevel), 5, yTopWidth+4);
+		UI.drawString("level:"+Integer.toString(zLevel), 5, yTopWidth+4);
 		UI.drawString("Scale:"+Double.toString((double) Math.round((scale * 100)) / 100), 80, yTopWidth+4);
 	}
 	
@@ -155,5 +156,4 @@ public class Display {
 
 
 
-	
 }

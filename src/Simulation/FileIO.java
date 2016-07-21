@@ -12,13 +12,9 @@ import java.util.Map;
 
 public class FileIO {
 
-
-
-
-
     public Map<Point2D, Chunk> loadLevel(String Directory){
 
-        System.out.println("Loading Level From: "+Directory);
+        System.out.println("Loading level From: "+Directory);
 
 
         Map<Point2D, Chunk> Level = new HashMap<Point2D, Chunk>();
