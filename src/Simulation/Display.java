@@ -74,7 +74,7 @@ public class Display {
 		*/
 	}
 	
-	public void updateDisplay(Level level, int zLevel, double x, double y, double scale) {
+	public void updateDisplay(Level level, int zLevel, double x, double y, double scale,int currentblock) {
 		this.xOrg = x;
 		this.yOrg = y;		
 		this.scale = scale;
@@ -82,22 +82,32 @@ public class Display {
 		level.getLevelmap().forEach( (k,v) -> ShowChunk(v,k, zLevel) );
 		
 		//ShowChunk(level, zLevel);
-		ShowUI(zLevel);
+		ShowUI(zLevel, currentblock);
 		UI.repaintGraphics();
 	}
 	
-	public void ShowUI(int zLevel){
+	public void ShowUI(int zLevel, int currentblock){
 		int xTopWidth = (int)(UI.getCanvasWidth()*topXscale);
 		int yTopWidth = (int)(UI.getCanvasHeight()*topYscale);
 		UI.setFontSize(20);
+		UI.setLineWidth(3.0);
 		UI.setColor(Color.WHITE);
-		UI.fillRect(5, 5, xTopWidth, yTopWidth);
-		UI.fillRect(5, 30, 50, 200);
+		UI.fillRect(5, 4, xTopWidth, yTopWidth+5);
+
 		UI.setColor(Color.BLACK);
-		UI.drawRect(5, 5, xTopWidth, yTopWidth);
-		UI.drawRect(5, 30, 50, 200);
-		UI.drawString("level:"+Integer.toString(zLevel), 5, yTopWidth+4);
+		UI.drawRect(5, 4, xTopWidth, yTopWidth+5);
+
+		UI.drawString("level:"+Integer.toString(zLevel), 8, yTopWidth+4);
 		UI.drawString("Scale:"+Double.toString((double) Math.round((scale * 100)) / 100), 80, yTopWidth+4);
+
+		if(currentblock != 0) {
+			UI.drawImage(ImgMap.get(new BasicBlock(currentblock)).GetNormalImage(1), 6, 35, 49, 49);
+		}else{
+			UI.setColor(Color.WHITE);
+			UI.fillRect(6, 35, 49, 49);
+		}
+		UI.setColor(Color.BLACK);
+		UI.drawRect(6, 35, 49, 49);
 	}
 	
 	public void ShowChunk(Chunk chunk, Point2D Point, int zLevel) { //will be changed to 2D array of chunks in future	
@@ -128,8 +138,8 @@ public class Display {
 						if(chunk.getBlock(i,j,t) != null) {
 							if(chunk.getBlock(i,j,t).getId() != 0) {
 								foundblock = true;
-
 								img = ImgMap.get(chunk.getBlock(i, j, t)).GetNormalImage(zLevel + 1 - t);
+
 								//img = ImgMap.get(chunk.getBlock(i,j,t)).GetNormalImage(1);
 
 								break;

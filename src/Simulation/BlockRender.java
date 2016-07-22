@@ -49,5 +49,4 @@ public class BlockRender {
         }
         return NormalImages[depth];
     }
-
 }

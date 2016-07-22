@@ -20,12 +20,12 @@ public class Core extends MouseAdapter{
 	public int zLevel = 3;
 	
 	private int Dragging = 0; //0 if not dragging, 1 if mouse 1 dragging, 2 if mouse 2 dragging, ect
-	private int size = 1;
+	private double size = 3.0;
 
 	int currentblock = 1;
+	boolean SimRunning = false;
 
 	Level level;
-	//
 	
 	double scale = 2.0;
 	double xOrg = 0.0;
@@ -46,7 +46,9 @@ public class Core extends MouseAdapter{
 
 		//UI.addButton("Load Chunks", this::loadChunks);
 		UI.addButton("Update Display", this::updateDisplay);
-		UI.addTextField("Brush size", this::setBlockSize);
+		UI.addButton("Play/Pause Simulation", this::playPause);
+		UI.addButton("Stop Simulation", this::stopSimulation);
+		UI.addSlider("Brush Size", 1.0, 9.0,size,this::setBlockSize);
 		UI.setKeyListener(this::KeyPressed);
 		//UI.setMouseMotionListener(this :: doMouse);
 
@@ -70,17 +72,29 @@ public class Core extends MouseAdapter{
 		UI.getFrame().findComponentAt(600, 300).addMouseMotionListener(this);
 		UI.getFrame().findComponentAt(600, 300).addMouseListener(this);
 
+		UI.println("Simulation Stopped");
+
 	}
 
-	private void setBlockSize(String s) {
-		size = Integer.parseInt(s);
+	private void playPause() {
+		SimRunning = !(SimRunning);
+		if(SimRunning){
+			UI.println("Simulation started");
+		}else{
+			UI.println("Simulation paused");
+		}
+	}
+
+	private void stopSimulation() {
+		SimRunning = false;
+		UI.println("Simulation stopped");
+	}
+
+	private void setBlockSize(Double d) {
+		size = d;
+		//size = Integer.parseInt(s);
 		System.out.println("Current Brush size is now: "+ size);
 	}
-
-
-
-
-
 
 	public BlockLocation BlockLocFromMouse(int xMouse, int yMouse){
 		double Xdiff = (xMouse-xOrg);
@@ -107,9 +121,9 @@ public class Core extends MouseAdapter{
 		level.setBlock(blkloc,getCurrentBlock());
 
 		if(size != 1){
-			for(int i = -size+1;i<size;i++){
-				for(int j = -size+1;j<size;j++) {
-					System.out.println("Distance: "+blkloc.distance(blkloc.offsetBlkLoc(i, j)));
+			for(int i = -(int)size+1;i<size;i++){
+				for(int j = -(int)size+1;j<size;j++) {
+					//System.out.println("Distance: "+blkloc.distance(blkloc.offsetBlkLoc(i, j)));
 					if(blkloc.distance(blkloc.offsetBlkLoc(i, j))<(0.85*size)) {
 						level.setBlock(blkloc.offsetBlkLoc(i, j), getCurrentBlock());
 					}
@@ -128,7 +142,7 @@ public class Core extends MouseAdapter{
 	}
 	
 	public void updateDisplay(){
-		display.updateDisplay(level,zLevel, xOrg, yOrg, scale); //Method changed to array of chunks in future
+		display.updateDisplay(level,zLevel, xOrg, yOrg, scale,currentblock); //Method changed to array of chunks in future
 	}
 	
 	
@@ -255,7 +269,7 @@ public class Core extends MouseAdapter{
 
 
 	public static void main(String[] args) {
-		Core c = new Core();
+		Core ThisCore = new Core();
 	}
 
 }
