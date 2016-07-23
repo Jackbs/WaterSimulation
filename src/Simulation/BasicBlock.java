@@ -20,6 +20,11 @@ public class BasicBlock implements Block{
         return id;
     }
 
+    @Override
+    public boolean isSolid() {
+        return true;
+    }
+
 
     @Override
     public boolean equals(Object o) {

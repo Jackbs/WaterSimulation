@@ -34,8 +34,6 @@ public class BlockRender {
             bimage = op.filter(bimage, null);
             NormalImages[i] = bimage;
         }
-
-
     }
 
     public BufferedImage GetNormalImage(int depth){

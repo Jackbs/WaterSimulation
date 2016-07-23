@@ -52,12 +52,6 @@ public class Display {
 			ImgMap.put(new BasicBlock(2),new BlockRender(ImageIO.read(new File("grass_top.png"))));
 			ImgMap.put(new BasicBlock(3),new BlockRender(ImageIO.read(new File("dirt_top.png"))));
 			ImgMap.put(new WaterBlock(5),new BlockRender(ImageIO.read(new File("water_top.png"))));
-
-			//ImgMap.put(new BasicBlock(-1),new BufferedImage[]{null,ImageIO.read(new File("void_top.png"))});
-			//ImgMap.put(new BasicBlock(1),new BufferedImage[]{null,ImageIO.read(new File("stone_top.png"))});
-			//ImgMap.put(new BasicBlock(2),new BufferedImage[]{null,ImageIO.read(new File("grass_top.png"))});
-			//ImgMap.put(new BasicBlock(3),new BufferedImage[]{null,ImageIO.read(new File("dirt_top.png"))});
-
 		} catch (IOException e) {
 
 		}
@@ -101,7 +95,11 @@ public class Display {
 		UI.drawString("Scale:"+Double.toString((double) Math.round((scale * 100)) / 100), 80, yTopWidth+4);
 
 		if(currentblock != 0) {
-			UI.drawImage(ImgMap.get(new BasicBlock(currentblock)).GetNormalImage(1), 6, 35, 49, 49);
+			if(currentblock != 5) {
+				UI.drawImage(ImgMap.get(new BasicBlock(currentblock)).GetNormalImage(1), 6, 35, 49, 49);
+			}else{
+				UI.drawImage(ImgMap.get(new WaterBlock(currentblock)).GetNormalImage(1), 6, 35, 49, 49);
+			}
 		}else{
 			UI.setColor(Color.WHITE);
 			UI.fillRect(6, 35, 49, 49);

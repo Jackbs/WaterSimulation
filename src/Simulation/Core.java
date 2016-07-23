@@ -15,6 +15,7 @@ public class Core extends MouseAdapter{
 	
 	//MinecraftIO MCIO;
 	Display display;
+	WaterSimulation WaterSim;
 
 
 	public int zLevel = 3;
@@ -48,6 +49,7 @@ public class Core extends MouseAdapter{
 		UI.addButton("Update Display", this::updateDisplay);
 		UI.addButton("Play/Pause Simulation", this::playPause);
 		UI.addButton("Stop Simulation", this::stopSimulation);
+		UI.addButton("Do Simulation Tick", this::doWaterSimTick);
 		UI.addSlider("Brush Size", 1.0, 9.0,size,this::setBlockSize);
 		UI.setKeyListener(this::KeyPressed);
 		//UI.setMouseMotionListener(this :: doMouse);
@@ -66,6 +68,7 @@ public class Core extends MouseAdapter{
 
 
 		level = new Level("world1");
+		WaterSim = new WaterSimulation();
 
 		updateDisplay();
 
@@ -88,6 +91,11 @@ public class Core extends MouseAdapter{
 	private void stopSimulation() {
 		SimRunning = false;
 		UI.println("Simulation stopped");
+	}
+
+	public void doWaterSimTick(){
+		level = WaterSim.doWaterSimTick(level);
+		updateDisplay();
 	}
 
 	private void setBlockSize(Double d) {
@@ -120,17 +128,16 @@ public class Core extends MouseAdapter{
 	public void paintBlocks(BlockLocation blkloc){
 		level.setBlock(blkloc,getCurrentBlock());
 
-		if(size != 1){
+		if((getCurrentBlock().isSolid())&&(size != 1)){
 			for(int i = -(int)size+1;i<size;i++){
 				for(int j = -(int)size+1;j<size;j++) {
 					//System.out.println("Distance: "+blkloc.distance(blkloc.offsetBlkLoc(i, j)));
-					if(blkloc.distance(blkloc.offsetBlkLoc(i, j))<(0.85*size)) {
-						level.setBlock(blkloc.offsetBlkLoc(i, j), getCurrentBlock());
+					if(blkloc.distance(blkloc.offsetBlkLoc(i, j,0))<(0.85*size)) {
+						level.setBlock(blkloc.offsetBlkLoc(i, j,0), getCurrentBlock());
 					}
 				}
 			}
 		}
-
 		updateDisplay();
 	}
 

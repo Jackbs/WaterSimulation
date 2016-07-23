@@ -5,4 +5,5 @@ import java.awt.image.BufferedImage;
  */
 public interface Block{
     public int getId();
+    public boolean isSolid();
 }

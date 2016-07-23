@@ -48,7 +48,11 @@ public class Chunk {
 			
 		}	
 	}
-	
+
+	public Block getBlock(BlockLocation b){
+		return Blocks[b.x][b.y][b.z];
+	}
+
 	public Block getBlock(int x,int y,int z){
 		return Blocks[x][y][z];
 	}

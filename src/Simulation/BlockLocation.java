@@ -27,10 +27,15 @@ public class BlockLocation {
 
     }
 
-    public BlockLocation offsetBlkLoc(int xOffset,int yOffset){
+    public void printBlockInfomation(Level l){
+        System.out.println("[Blkinfo] ID:"+l.getBlock(this).getId()+" [x,y,z]=["+this.x+","+this.y+","+this.z+"] [Chunk][x,y]=["+(int)this.p.getX()+","+(int)this.p.getY()+"]");
+    }
+
+    public BlockLocation offsetBlkLoc(int xOffset,int yOffset, int zOffset){
         Point2D thisp = this.p;
         int thisx = this.x;
         int thisy = this.y;
+        int thisz = this.z;
         if((this.x+xOffset)>15){
             thisp = new Point(1+(int)thisp.getX(),(int)thisp.getY());
             thisx = thisx-16;
@@ -47,7 +52,30 @@ public class BlockLocation {
             thisp = new Point((int)thisp.getX(),((int)thisp.getY())-1);
             thisy = thisy+16;
         }
-        return new BlockLocation(thisx+xOffset,thisy+yOffset,this.z,thisp);
+        return new BlockLocation(thisx+xOffset,thisy+yOffset,thisz+zOffset,thisp);
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BlockLocation that = (BlockLocation) o;
+
+        if (x != that.x) return false;
+        if (y != that.y) return false;
+        if (z != that.z) return false;
+        return p != null ? p.equals(that.p) : that.p == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = x;
+        result = 31 * result + y;
+        result = 31 * result + z;
+        result = 31 * result + (p != null ? p.hashCode() : 0);
+        return result;
     }
 }

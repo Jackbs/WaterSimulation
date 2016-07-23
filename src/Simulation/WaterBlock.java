@@ -4,14 +4,34 @@ package Simulation;
  * Created by Jack on 21-07-16.
  */
 public class WaterBlock implements Block {
-    private int id = 5;
-    public WaterBlock(int i) {
-
+    private int id;
+    private double pressure;
+    private double FillLevel;
+    public WaterBlock(int id) {
+        this.id = id;
+        FillLevel = 1.0;
     }
+
+    public double getFillLevel(){
+        return FillLevel;
+    }
+    public double getPressure(){
+        return pressure;
+    }
+
+    public void setPressure(double p){
+        pressure = p;
+    }
+
 
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public boolean isSolid() {
+        return false;
     }
 
 
