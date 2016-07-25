@@ -25,7 +25,8 @@ public class Level {
 
     public Block getBlock(BlockLocation blkloc) {
         if((isValidBlockLoc(blkloc))){
-            if(level.get(blkloc) == null) { //Trying to get an air block, therefore set location to air block
+
+            if(level.get(blkloc.p).getBlock(blkloc) == null) { //Trying to get an air block, therefore set location to air block
                 setBlock(blkloc, new Block(0, this));
             }
             return (level.get(blkloc.p).getBlock(blkloc));
@@ -44,16 +45,17 @@ public class Level {
 
     public void setBlock(BlockLocation blkloc, Block b) {
         //System.out.println("Setting Block of type: "+b.getId()+" [x:"+blkloc.x+" y:"+ blkloc.y + " z:"+blkloc.z+" ]");
-        if (level.containsKey(blkloc.p)) {
+        if (isValidBlockLoc(blkloc)) {
             level.get(blkloc.p).setBlock(blkloc.x, blkloc.y, blkloc.z, b);
 
             if (!(b.isSolid())) {
                 if (WaterBlockPos.add(blkloc)) {
-                    System.out.println("Adding Block:");
+                    System.out.println("Adding Block:"+blkloc.stringBlockInfomation(this));
+
                 }
             }else{
                 if (WaterBlockPos.remove(blkloc)) {
-                    System.out.print("Removing Block:");
+                    System.out.println("Removing Block:"+blkloc.stringBlockInfomation(this));
                 }
             }
 

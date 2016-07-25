@@ -27,8 +27,8 @@ public class BlockLocation {
 
     }
 
-    public void printBlockInfomation(Level l){
-        System.out.println("[Blkinfo] ID:"+l.getBlock(this).getId()+" [x,y,z]=["+this.x+","+this.y+","+this.z+"] [Chunk][x,y]=["+(int)this.p.getX()+","+(int)this.p.getY()+"]");
+    public String stringBlockInfomation(Level l){
+        return ("[Blkinfo] ID:"+l.getBlock(this).getId()+" [x,y,z]=["+this.x+","+this.y+","+this.z+"] [Chunk][x,y]=["+(int)this.p.getX()+","+(int)this.p.getY()+"]");
     }
 
     public BlockLocation offsetBlkLoc(int xOffset,int yOffset, int zOffset){

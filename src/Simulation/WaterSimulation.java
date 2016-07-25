@@ -29,18 +29,24 @@ public class WaterSimulation{
                 highestliq = blkloc;
             }
         }
-        highestliq.printBlockInfomation(workingLevel);
+        if(highestliq.p == null){
+            System.out.println("Could not start simulation, no water blocks found");
+            return workingLevel;
+        }
+        highestliq.stringBlockInfomation(workingLevel);
 
         updatePressure(highestliq,Atmosphericpressure);
 
         Iterator I = WaterGroup1.iterator();
         while(I.hasNext()){
             WaterBlock w = ((WaterBlock)workingLevel.getBlock(((BlockLocation)I.next())));
-            System.out.print("Pressure: "+w.getPressure());
-            w.getBlkLoc().printBlockInfomation(workingLevel);
-            Block b = w.getBlockright();
-            BlockLocation bl = b.getBlkLoc();
-            bl.printBlockInfomation(workingLevel);
+            double Above = ((WaterBlock)w.getBlockAbove()).getPressure() - w.getPressure();
+            double Bellow = ((WaterBlock)w.getBlockBellow()).getPressure() - w.getPressure();
+            double Up = ((WaterBlock)w.getBlockUp()).getPressure() - w.getPressure();
+            double Down = ((WaterBlock)w.getBlockDown()).getPressure() - w.getPressure();
+            double Left = ((WaterBlock)w.getBlockLeft()).getPressure() - w.getPressure();
+            double Right = ((WaterBlock)w.getBlockright()).getPressure() - w.getPressure();
+            double Max = Math.max(Math.max(Left,Right),Math.max(Math.max(Above,Bellow),Math.max(Up,Down)));
         }
         return workingLevel;
     }
@@ -63,6 +69,7 @@ public class WaterSimulation{
         }
 
         if((workingLevel.getBlock(blkloc.offsetBlkLoc(0, 0, 1)) == null)||(workingLevel.getBlock(blkloc.offsetBlkLoc(0, 0, 1)).getId() == 0)){ //There is air or null above the block
+            blkloc.stringBlockInfomation(workingLevel);
             WaterBlock thisWaterBlock = (WaterBlock)workingLevel.getBlock(blkloc);
             thisWaterBlock.setPressure(kpaPerBlock*thisWaterBlock.getFillLevel());
         }
@@ -73,22 +80,26 @@ public class WaterSimulation{
 
         if((workingLevel.getBlock(blkloc.offsetBlkLoc(1, 0, 0)) != null)&&(!(workingLevel.getBlock(blkloc.offsetBlkLoc(1, 0, 0)).isSolid()))){ //There is a water to the right of the block
             WaterBlock thisWaterBlock = (WaterBlock)workingLevel.getBlock(blkloc);
-            updatePressure(blkloc.offsetBlkLoc(1, 0, 0),thisWaterBlock.getPressure());
+            updatePressure(blkloc.offsetBlkLoc(1, 0, 0),topPressure);
+            thisWaterBlock.setPressure(topPressure);
         }
 
         if((workingLevel.getBlock(blkloc.offsetBlkLoc(0, 1, 0)) != null)&&(!(workingLevel.getBlock(blkloc.offsetBlkLoc(0, 1, 0)).isSolid()))){ //There is a water to the up of the block
             WaterBlock thisWaterBlock = (WaterBlock)workingLevel.getBlock(blkloc);
             updatePressure(blkloc.offsetBlkLoc(0, 1, 0),thisWaterBlock.getPressure());
+            thisWaterBlock.setPressure(topPressure);
         }
 
         if((workingLevel.getBlock(blkloc.offsetBlkLoc(-1, 0, 0)) != null)&&(!(workingLevel.getBlock(blkloc.offsetBlkLoc(-1, 0, 0)).isSolid()))){ //There is a water to the left of the block
             WaterBlock thisWaterBlock = (WaterBlock)workingLevel.getBlock(blkloc);
             updatePressure(blkloc.offsetBlkLoc(-1, 0, 0),thisWaterBlock.getPressure());
+            thisWaterBlock.setPressure(topPressure);
         }
 
         if((workingLevel.getBlock(blkloc.offsetBlkLoc(0, -1, 0)) != null)&&(!(workingLevel.getBlock(blkloc.offsetBlkLoc(0, -1, 0)).isSolid()))){ //There is a water to the down of the block
             WaterBlock thisWaterBlock = (WaterBlock)workingLevel.getBlock(blkloc);
             updatePressure(blkloc.offsetBlkLoc(0, -1, 0),thisWaterBlock.getPressure());
+            thisWaterBlock.setPressure(topPressure);
         }
 
         if((workingLevel.getBlock(blkloc.offsetBlkLoc(0, 0, -1)) != null)&&(!(workingLevel.getBlock(blkloc.offsetBlkLoc(0, 0, -1)).isSolid()))){ //There is a water block bellow this block
