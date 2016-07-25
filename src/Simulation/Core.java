@@ -3,9 +3,7 @@ package Simulation;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.util.*;
 import java.awt.event.MouseAdapter;
-import java.awt.geom.Point2D;
 
 import ecs100.UI;
 
@@ -43,7 +41,7 @@ public class Core extends MouseAdapter{
 
 
 
-		display = new Display();
+		display = new Display(level);
 
 		//UI.addButton("Load Chunks", this::loadChunks);
 		UI.addButton("Update Display", this::updateDisplay);
@@ -100,6 +98,7 @@ public class Core extends MouseAdapter{
 
 	private void setBlockSize(Double d) {
 		size = d;
+
 		//size = Integer.parseInt(s);
 		System.out.println("Current Brush size is now: "+ size);
 	}
@@ -119,16 +118,16 @@ public class Core extends MouseAdapter{
 
 	public Block getCurrentBlock(){
 		if(currentblock == 5){
-			return new WaterBlock(currentblock);
+			return new WaterBlock(currentblock,level);
 		}else {
-			return new BasicBlock(currentblock);
+			return new SolidBlock(currentblock,level);
 		}
 	}
 
 	public void paintBlocks(BlockLocation blkloc){
 		level.setBlock(blkloc,getCurrentBlock());
 
-		if((getCurrentBlock().isSolid())&&(size != 1)){
+		if(size != 1){
 			for(int i = -(int)size+1;i<size;i++){
 				for(int j = -(int)size+1;j<size;j++) {
 					//System.out.println("Distance: "+blkloc.distance(blkloc.offsetBlkLoc(i, j)));
@@ -145,11 +144,16 @@ public class Core extends MouseAdapter{
 
 	public void setBlockType(String s){
 		currentblock = Integer.parseInt(s);
+		if(currentblock == 5){
+			if(size>2){
+				size = 2;
+			}
+		}
 		System.out.println("Current Block is now: "+currentblock);
 	}
 	
 	public void updateDisplay(){
-		display.updateDisplay(level,zLevel, xOrg, yOrg, scale,currentblock); //Method changed to array of chunks in future
+		display.updateDisplay(level,zLevel, xOrg, yOrg, scale,currentblock);
 	}
 	
 	

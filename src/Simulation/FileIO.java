@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class FileIO {
 
-    public Map<Point2D, Chunk> loadLevel(String Directory){
+    public Map<Point2D, Chunk> loadLevel(String Directory,Level level){
 
         System.out.println("Loading level From: "+Directory);
 
@@ -24,7 +24,7 @@ public class FileIO {
         for (File file : files) {
             if (file.isFile()) {
                 try {
-                    Chunk chunk = new Chunk(file);
+                    Chunk chunk = new Chunk(file,level);
                     Level.put(chunk.getChunkLoc(), chunk);
 
                 } catch (Exception e) {

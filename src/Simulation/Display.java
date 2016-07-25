@@ -31,41 +31,33 @@ public class Display {
 	
 	double xOrg;
 	double yOrg;
+
+	Level level;
 	
-	public Display() {
+	public Display(Level level) {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double width = 1366; //screenSize.getWidth();
 		double height = 768; //screenSize.getHeight();
-
+		this.level = level;
 		UI.setWindowSize((int) width, (int) height);
 		UI.initialise();
 		UI.setDivider(0.15);
 		UI.setImmediateRepaint(false);
-
 		CreateBlockRenders();
 	}
 
 	private void CreateBlockRenders(){
 		try {
-			ImgMap.put(new BasicBlock(-1),new BlockRender(ImageIO.read(new File("void_top.png"))));
-			ImgMap.put(new BasicBlock(1),new BlockRender(ImageIO.read(new File("stone_top.png"))));
-			ImgMap.put(new BasicBlock(2),new BlockRender(ImageIO.read(new File("grass_top.png"))));
-			ImgMap.put(new BasicBlock(3),new BlockRender(ImageIO.read(new File("dirt_top.png"))));
-			ImgMap.put(new WaterBlock(5),new BlockRender(ImageIO.read(new File("water_top.png"))));
+			ImgMap.put(new SolidBlock(-1,level),new BlockRender(ImageIO.read(new File("void_top.png"))));
+			ImgMap.put(new SolidBlock(1,level),new BlockRender(ImageIO.read(new File("stone_top.png"))));
+			ImgMap.put(new SolidBlock(2,level),new BlockRender(ImageIO.read(new File("grass_top.png"))));
+			ImgMap.put(new SolidBlock(3,level),new BlockRender(ImageIO.read(new File("dirt_top.png"))));
+			ImgMap.put(new WaterBlock(5,level),new BlockRender(ImageIO.read(new File("water_top.png"))));
 		} catch (IOException e) {
 
 		}
 
 
-	}
-
-
-
-
-	public void preMakeImg(){
-		/*
-
-		*/
 	}
 	
 	public void updateDisplay(Level level, int zLevel, double x, double y, double scale,int currentblock) {
@@ -96,9 +88,9 @@ public class Display {
 
 		if(currentblock != 0) {
 			if(currentblock != 5) {
-				UI.drawImage(ImgMap.get(new BasicBlock(currentblock)).GetNormalImage(1), 6, 35, 49, 49);
+				UI.drawImage(ImgMap.get(new SolidBlock(currentblock,level)).GetNormalImage(1), 6, 35, 49, 49);
 			}else{
-				UI.drawImage(ImgMap.get(new WaterBlock(currentblock)).GetNormalImage(1), 6, 35, 49, 49);
+				UI.drawImage(ImgMap.get(new WaterBlock(currentblock,level)).GetNormalImage(1), 6, 35, 49, 49);
 			}
 		}else{
 			UI.setColor(Color.WHITE);
@@ -145,7 +137,7 @@ public class Display {
 						}
 					}
 					if(!foundblock){
-						img = ImgMap.get(new BasicBlock(-1)).GetNormalImage(1);
+						img = ImgMap.get(new SolidBlock(-1,level)).GetNormalImage(1);
 
 					}
 				}

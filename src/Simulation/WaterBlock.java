@@ -3,13 +3,13 @@ package Simulation;
 /**
  * Created by Jack on 21-07-16.
  */
-public class WaterBlock implements Block {
+public class WaterBlock extends Block {
     private int id;
     private double pressure;
-    private double FillLevel;
-    public WaterBlock(int id) {
-        this.id = id;
-        FillLevel = 1.0;
+    private double FillLevel = 1.0;
+
+    public WaterBlock(int id, Level currentLevel) {
+        super(id,currentLevel);
     }
 
     public double getFillLevel(){
@@ -22,12 +22,10 @@ public class WaterBlock implements Block {
     public void setPressure(double p){
         pressure = p;
     }
-
-
-    @Override
-    public int getId() {
-        return id;
+    public void setFillLevel(double fl){
+        FillLevel = fl;
     }
+
 
     @Override
     public boolean isSolid() {

@@ -6,16 +6,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import ecs100.UI;
-
-
 
 public class Chunk {
 	
 	private Block[][][] Blocks = new Block [16][16][128];
 	private Point2D pos;
 	
-	public Chunk(File ChunkFile) throws Exception{
+	public Chunk(File ChunkFile, Level level) throws Exception{
 		
 		try {
 			Scanner scan = new Scanner(ChunkFile);
@@ -34,7 +31,7 @@ public class Chunk {
 					}
 					//System.out.print("CharBlock is: ");
 					for(int x = 0;x<charBlock.length;x++){
-						setBlock(x,y,z,new BasicBlock(Integer.parseInt(charBlock[x])));
+						setBlock(x,y,z,new SolidBlock(Integer.parseInt(charBlock[x]),level));
 
 						//System.out.print(Blocks[x][y][z]);
 					}
@@ -50,14 +47,22 @@ public class Chunk {
 	}
 
 	public Block getBlock(BlockLocation b){
-		return Blocks[b.x][b.y][b.z];
+		if(b.z>0){
+			return Blocks[b.x][b.y][b.z];
+		}else{
+			return null;
+		}
+
 	}
 
 	public Block getBlock(int x,int y,int z){
 		return Blocks[x][y][z];
 	}
 
-	public void setBlock(int x,int y,int z,Block block){Blocks[x][y][z] = block;}
+	public void setBlock(int x,int y,int z,Block block){
+		Blocks[x][y][z] = block;
+		Blocks[x][y][z].setBlkLoc(new BlockLocation(x,y,z,pos));
+	}
 
 	public Point2D getChunkLoc(){
 		return pos;
