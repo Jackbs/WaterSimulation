@@ -6,7 +6,7 @@ package Simulation;
 public class Block {
     private int id;
     private BlockLocation blkloc;
-    private Level currentLevel;
+    public Level currentLevel;
 
     @Override
     public int hashCode() {
@@ -43,7 +43,7 @@ public class Block {
         if (o == null || getClass() != o.getClass()) return false;
 
         Block that = (Block) o;
-
+        //System.out.println("Calling equalls on blk thisid,thatid: "+id+","+that.id);
         return id == that.getId();
 
     }

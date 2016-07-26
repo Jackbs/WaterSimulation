@@ -48,11 +48,13 @@ public class Display {
 
 	private void CreateBlockRenders(){
 		try {
+			System.out.println("Putting stuff in imgmap");
 			ImgMap.put(new SolidBlock(-1,level),new BlockRender(ImageIO.read(new File("void_top.png"))));
 			ImgMap.put(new SolidBlock(1,level),new BlockRender(ImageIO.read(new File("stone_top.png"))));
 			ImgMap.put(new SolidBlock(2,level),new BlockRender(ImageIO.read(new File("grass_top.png"))));
 			ImgMap.put(new SolidBlock(3,level),new BlockRender(ImageIO.read(new File("dirt_top.png"))));
 			ImgMap.put(new WaterBlock(5,level),new BlockRender(ImageIO.read(new File("water_top.png"))));
+
 		} catch (IOException e) {
 
 		}
@@ -90,7 +92,10 @@ public class Display {
 			if(currentblock != 5) {
 				UI.drawImage(ImgMap.get(new SolidBlock(currentblock,level)).GetNormalImage(1), 6, 35, 49, 49);
 			}else{
-				UI.drawImage(ImgMap.get(new WaterBlock(currentblock,level)).GetNormalImage(1), 6, 35, 49, 49);
+				WaterBlock wb = new WaterBlock(currentblock,level);
+				System.out.println(wb.getId()+""+wb.getClass());
+				System.out.println("Imgmap.get type "+ImgMap.get(wb).getClass());
+				UI.drawImage(ImgMap.get(wb).GetNormalImage(1), 6, 35, 49, 49);
 			}
 		}else{
 			UI.setColor(Color.WHITE);

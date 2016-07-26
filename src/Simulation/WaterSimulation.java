@@ -1,8 +1,6 @@
 package Simulation;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Jack on 23-07-16.
@@ -38,27 +36,27 @@ public class WaterSimulation{
         updatePressure(highestliq,Atmosphericpressure);
 
         Iterator I = WaterGroup1.iterator();
+        List MaxDeltaP = new ArrayList<WaterBlock>();
+        double MaxPressure = 0.0;
         while(I.hasNext()){
             WaterBlock w = ((WaterBlock)workingLevel.getBlock(((BlockLocation)I.next())));
-            double Above = ((WaterBlock)w.getBlockAbove()).getPressure() - w.getPressure();
-            double Bellow = ((WaterBlock)w.getBlockBellow()).getPressure() - w.getPressure();
-            double Up = ((WaterBlock)w.getBlockUp()).getPressure() - w.getPressure();
-            double Down = ((WaterBlock)w.getBlockDown()).getPressure() - w.getPressure();
-            double Left = ((WaterBlock)w.getBlockLeft()).getPressure() - w.getPressure();
-            double Right = ((WaterBlock)w.getBlockright()).getPressure() - w.getPressure();
-            double Max = Math.max(Math.max(Left,Right),Math.max(Math.max(Above,Bellow),Math.max(Up,Down)));
+            if((w.getMaxPressure()) == MaxPressure){
+                MaxDeltaP.add(w);
+            }
+            if((w.getMaxPressure())>MaxPressure){
+                MaxDeltaP.clear();
+                MaxPressure = w.getMaxPressure();
+                MaxDeltaP.add(w);
+            }
+
+        }
+        for(int i = 0;i<MaxDeltaP.size();i++){
+            System.out.println("Max Pressure of blocks: "+((WaterBlock)MaxDeltaP.get(i)).getMaxPressure());
         }
         return workingLevel;
     }
 
-    //Get's the pressure of any block, assumes that level.isValidBlockLoc has been called to check that null blocks are air and not out of bounds
-    public double getPressure(BlockLocation blkloc){
-        if((workingLevel.getBlock(blkloc) == null)||(workingLevel.getBlock(blkloc).getId() == 0)){
-            return Atmosphericpressure; //Block is air
-        }else{
-            return ((WaterBlock)workingLevel.getBlock(blkloc)).getPressure();
-        }
-    }
+
 
     public void updatePressure(BlockLocation blkloc,double topPressure){
 

@@ -28,7 +28,7 @@ public class BlockRender {
 
             float scaleFactor = (float)(((double)hightdarken)/(i)*0.5);
 
-            System.out.println(i+" :SF: "+scaleFactor);
+            //System.out.println(i+" :SF: "+scaleFactor);
             //float scaleFactor = (float)Math.pow(0.6, t);
             RescaleOp op = new RescaleOp(scaleFactor, 0, null);
             bimage = op.filter(bimage, null);

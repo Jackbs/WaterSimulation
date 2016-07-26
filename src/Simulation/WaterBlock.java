@@ -9,7 +9,7 @@ public class WaterBlock extends Block {
     private double FillLevel = 1.0;
 
     public WaterBlock(int id, Level currentLevel) {
-        super(id,currentLevel);
+            super(id,currentLevel);
     }
 
     public double getFillLevel(){
@@ -32,20 +32,38 @@ public class WaterBlock extends Block {
         return false;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
 
+
+    /*
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         WaterBlock that = (WaterBlock) o;
-
+        System.out.println("Calling equalls thisid,thatid: "+id+","+that.id);
         return id == that.id;
 
     }
+    */
 
     @Override
     public int hashCode() {
         return id;
+    }
+
+    public double getMaxPressure() {
+        double Above = ((WaterBlock)this.getBlockAbove()).getPressure() - getPressure();
+        double Bellow = ((WaterBlock)this.getBlockBellow()).getPressure() - getPressure();
+        double Up = ((WaterBlock)this.getBlockUp()).getPressure() - getPressure();
+        double Down = ((WaterBlock)this.getBlockDown()).getPressure() - getPressure();
+        double Left = ((WaterBlock)this.getBlockLeft()).getPressure() - getPressure();
+        double Right = ((WaterBlock)this.getBlockright()).getPressure() - getPressure();
+        double Max = Math.max(Math.max(Left,Right),Math.max(Math.max(Above,Bellow),Math.max(Up,Down)));
+        return Max;
     }
 }

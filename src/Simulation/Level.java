@@ -11,11 +11,13 @@ public class Level {
     Set WaterBlockPos = new HashSet<BlockLocation>();
 
     FileIO fileIO;
+    private double Atmosphericpressure = 101.325;
     private Map<Point2D, Chunk> level = new HashMap<Point2D, Chunk>();
 
     public Level(String worldname) {
         fileIO = new FileIO();
         level = fileIO.loadLevel(worldname,this);
+        Atmosphericpressure = 0.0;
     }
 
     public Map<Point2D, Chunk> getLevelmap() {
@@ -62,6 +64,15 @@ public class Level {
         }
     }
 
+    //Get's the pressure of any block, assumes that level.isValidBlockLoc has been called to check that null blocks are air and not out of bounds
+    public double getPressure(BlockLocation blkloc){
+        if((this.getBlock(blkloc) == null)||(this.getBlock(blkloc).getId() == 0)){
+            return Atmosphericpressure; //Block is air
+        }else{
+            return ((WaterBlock)this.getBlock(blkloc)).getPressure();
+        }
+    }
+
     //Used to determine if a block-location is valid
     public boolean isValidBlockLoc(BlockLocation blkloc){
         if(!level.containsKey(blkloc.p)){
@@ -70,9 +81,6 @@ public class Level {
         if(blkloc.z<0){
             return false;
         }
-        if(blkloc.z>128){
-            return false;
-        }
-        return true;
+        return blkloc.z <= 128;
     }
 }
