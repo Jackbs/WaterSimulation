@@ -51,10 +51,6 @@ public class WaterBlock extends Block {
     }
     */
 
-    @Override
-    public int hashCode() {
-        return id;
-    }
 
     public double getMaxPressure() {
         double Above = ((WaterBlock)this.getBlockAbove()).getPressure() - getPressure();
@@ -65,5 +61,12 @@ public class WaterBlock extends Block {
         double Right = ((WaterBlock)this.getBlockright()).getPressure() - getPressure();
         double Max = Math.max(Math.max(Left,Right),Math.max(Math.max(Above,Bellow),Math.max(Up,Down)));
         return Max;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + id;
+        return result;
     }
 }

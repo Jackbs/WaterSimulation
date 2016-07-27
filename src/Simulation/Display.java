@@ -94,7 +94,9 @@ public class Display {
 			}else{
 				WaterBlock wb = new WaterBlock(currentblock,level);
 				System.out.println(wb.getId()+""+wb.getClass());
-				System.out.println("Imgmap.get type "+ImgMap.get(wb).getClass());
+				if(ImgMap.get(wb) == null){
+					System.out.println("null_stuff");
+				}
 				UI.drawImage(ImgMap.get(wb).GetNormalImage(1), 6, 35, 49, 49);
 			}
 		}else{

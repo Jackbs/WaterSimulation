@@ -9,6 +9,17 @@ public class Block {
     public Level currentLevel;
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Block block = (Block) o;
+
+        return id == block.id;
+
+    }
+
+    @Override
     public int hashCode() {
         return id;
     }
@@ -37,16 +48,7 @@ public class Block {
     }
 
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
 
-        Block that = (Block) o;
-        //System.out.println("Calling equalls on blk thisid,thatid: "+id+","+that.id);
-        return id == that.getId();
-
-    }
 
     public Block getBlockAbove(){
         return currentLevel.getBlock(blkloc.offsetBlkLoc(0,0,1));
