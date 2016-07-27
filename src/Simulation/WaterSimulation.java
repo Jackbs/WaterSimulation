@@ -31,28 +31,34 @@ public class WaterSimulation{
             System.out.println("Could not start simulation, no water blocks found");
             return workingLevel;
         }
-        highestliq.stringBlockInfomation(workingLevel);
+        System.out.println("Highest Block info:"+highestliq.stringBlockInfomation(workingLevel));
 
-        updatePressure(highestliq,Atmosphericpressure);
+        updatePressure(highestliq,Atmosphericpressure+kpaPerBlock);
+
+        System.out.println("updatePressure done, numblocks: "+WaterGroup1.size());
 
         Iterator I = WaterGroup1.iterator();
         List MaxDeltaP = new ArrayList<WaterBlock>();
         double MaxPressure = 0.0;
         while(I.hasNext()){
             WaterBlock w = ((WaterBlock)workingLevel.getBlock(((BlockLocation)I.next())));
-            if((w.getMaxPressure()) == MaxPressure){
+            double MaxP = w.getMaxPressure();
+            System.out.println("DeltaP,Pressure["+MaxP+"]["+w.getPressure()+"]at block:"+w.getBlkLoc().stringBlockInfomation(workingLevel));
+            if(MaxP == MaxPressure){
                 MaxDeltaP.add(w);
             }
-            if((w.getMaxPressure())>MaxPressure){
+            if((MaxP)>MaxPressure){
                 MaxDeltaP.clear();
-                MaxPressure = w.getMaxPressure();
+                MaxPressure = MaxP;
                 MaxDeltaP.add(w);
             }
 
         }
+
         for(int i = 0;i<MaxDeltaP.size();i++){
-            System.out.println("Max Pressure of blocks: "+((WaterBlock)MaxDeltaP.get(i)).getMaxPressure());
+            System.out.println("Max Pressure of block["+i+"];"+((WaterBlock)MaxDeltaP.get(i)).getMaxPressure());
         }
+
         return workingLevel;
     }
 
@@ -60,49 +66,59 @@ public class WaterSimulation{
 
     public void updatePressure(BlockLocation blkloc,double topPressure){
 
+
+
         if(WaterGroup1.contains(blkloc)){ //WaterBlock has allready been added
             return;
         }else{
             WaterGroup1.add(blkloc);
         }
+        //System.out.println("Doing Recessive P set on: "+blkloc.stringBlockInfomation(workingLevel));
 
         if((workingLevel.getBlock(blkloc.offsetBlkLoc(0, 0, 1)) == null)||(workingLevel.getBlock(blkloc.offsetBlkLoc(0, 0, 1)).getId() == 0)){ //There is air or null above the block
-            blkloc.stringBlockInfomation(workingLevel);
             WaterBlock thisWaterBlock = (WaterBlock)workingLevel.getBlock(blkloc);
             thisWaterBlock.setPressure(kpaPerBlock*thisWaterBlock.getFillLevel());
         }
-        if((workingLevel.getBlock(blkloc.offsetBlkLoc(0, 0, 1)) != null)&& !(workingLevel.getBlock(blkloc.offsetBlkLoc(0, 0, 1)).isSolid())){ //There is a water block above this block
+        if((workingLevel.getBlock(blkloc.offsetBlkLoc(0, 0, 1)) != null)&& (workingLevel.getBlock(blkloc.offsetBlkLoc(0, 0, 1)).getId() == 5)){ //There is a water block above this block
             WaterBlock thisWaterBlock = (WaterBlock)workingLevel.getBlock(blkloc);
             thisWaterBlock.setPressure(topPressure);
         }
 
-        if((workingLevel.getBlock(blkloc.offsetBlkLoc(1, 0, 0)) != null)&&(!(workingLevel.getBlock(blkloc.offsetBlkLoc(1, 0, 0)).isSolid()))){ //There is a water to the right of the block
+        if((workingLevel.getBlock(blkloc.offsetBlkLoc(1, 0, 0)) != null)&&((workingLevel.getBlock(blkloc.offsetBlkLoc(1, 0, 0)).getId() == 5))){ //There is a water to the right of the block
             WaterBlock thisWaterBlock = (WaterBlock)workingLevel.getBlock(blkloc);
+            thisWaterBlock.setPressure(topPressure);
             updatePressure(blkloc.offsetBlkLoc(1, 0, 0),topPressure);
-            thisWaterBlock.setPressure(topPressure);
         }
 
-        if((workingLevel.getBlock(blkloc.offsetBlkLoc(0, 1, 0)) != null)&&(!(workingLevel.getBlock(blkloc.offsetBlkLoc(0, 1, 0)).isSolid()))){ //There is a water to the up of the block
+        if((workingLevel.getBlock(blkloc.offsetBlkLoc(0, 1, 0)) != null)&&((workingLevel.getBlock(blkloc.offsetBlkLoc(0, 1, 0)).getId() == 5))){ //There is a water to the up of the block
             WaterBlock thisWaterBlock = (WaterBlock)workingLevel.getBlock(blkloc);
+            thisWaterBlock.setPressure(topPressure);
             updatePressure(blkloc.offsetBlkLoc(0, 1, 0),thisWaterBlock.getPressure());
-            thisWaterBlock.setPressure(topPressure);
+
+
         }
 
-        if((workingLevel.getBlock(blkloc.offsetBlkLoc(-1, 0, 0)) != null)&&(!(workingLevel.getBlock(blkloc.offsetBlkLoc(-1, 0, 0)).isSolid()))){ //There is a water to the left of the block
+        if((workingLevel.getBlock(blkloc.offsetBlkLoc(-1, 0, 0)) != null)&&((workingLevel.getBlock(blkloc.offsetBlkLoc(-1, 0, 0)).getId() == 5))){ //There is a water to the left of the block
             WaterBlock thisWaterBlock = (WaterBlock)workingLevel.getBlock(blkloc);
+            thisWaterBlock.setPressure(topPressure);
             updatePressure(blkloc.offsetBlkLoc(-1, 0, 0),thisWaterBlock.getPressure());
-            thisWaterBlock.setPressure(topPressure);
+
+
         }
 
-        if((workingLevel.getBlock(blkloc.offsetBlkLoc(0, -1, 0)) != null)&&(!(workingLevel.getBlock(blkloc.offsetBlkLoc(0, -1, 0)).isSolid()))){ //There is a water to the down of the block
+        if((workingLevel.getBlock(blkloc.offsetBlkLoc(0, -1, 0)) != null)&&((workingLevel.getBlock(blkloc.offsetBlkLoc(0, -1, 0)).getId() == 5))){ //There is a water to the down of the block
             WaterBlock thisWaterBlock = (WaterBlock)workingLevel.getBlock(blkloc);
+            thisWaterBlock.setPressure(topPressure);
             updatePressure(blkloc.offsetBlkLoc(0, -1, 0),thisWaterBlock.getPressure());
-            thisWaterBlock.setPressure(topPressure);
+
+
         }
 
-        if((workingLevel.getBlock(blkloc.offsetBlkLoc(0, 0, -1)) != null)&&(!(workingLevel.getBlock(blkloc.offsetBlkLoc(0, 0, -1)).isSolid()))){ //There is a water block bellow this block
+        if((workingLevel.getBlock(blkloc.offsetBlkLoc(0, 0, -1)) != null)&&((workingLevel.getBlock(blkloc.offsetBlkLoc(0, 0, -1)).getId() == 5))){ //There is a water block bellow this block
             WaterBlock thisWaterBlock = (WaterBlock)workingLevel.getBlock(blkloc);
+            thisWaterBlock.setPressure(topPressure);
             updatePressure(blkloc.offsetBlkLoc(0, 0, -1),thisWaterBlock.getPressure()+kpaPerBlock);
+
         }
     }
 }

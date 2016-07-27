@@ -16,7 +16,6 @@ public class Block {
         Block block = (Block) o;
 
         return id == block.id;
-
     }
 
     @Override
@@ -33,8 +32,6 @@ public class Block {
         blkloc = b;
     }
 
-
-
     public BlockLocation getBlkLoc(){
         return blkloc;
     }
@@ -43,8 +40,20 @@ public class Block {
         return id;
     }
 
+    public double getPressure(){
+        if(id == 0) {
+            return currentLevel.getGlobalPressure();
+        }else{
+            return 999999999;
+        }
+    }
+
     public boolean isSolid() {
-        return true;
+        if(id == 0) {
+            return false;
+        }else{
+            return true;
+        }
     }
 
 
@@ -59,7 +68,7 @@ public class Block {
     }
 
     public Block getBlockUp(){
-        return currentLevel.getBlock(blkloc.offsetBlkLoc(0,1,0));
+        return currentLevel.getBlock(blkloc.offsetBlkLoc(0,-1,0));
     }
 
     public Block getBlockDown(){
@@ -70,7 +79,7 @@ public class Block {
         return currentLevel.getBlock(blkloc.offsetBlkLoc(-1,0,0));
     }
 
-    public Block getBlockright(){
+    public Block getBlockRight(){
         return currentLevel.getBlock(blkloc.offsetBlkLoc(1,0,0));
     }
 }

@@ -29,6 +29,7 @@ public class Level {
         if((isValidBlockLoc(blkloc))){
 
             if(level.get(blkloc.p).getBlock(blkloc) == null) { //Trying to get an air block, therefore set location to air block
+                //System.out.println("Adding New Air Block at: "+blkloc.stringBlockInfomation(this));
                 setBlock(blkloc, new Block(0, this));
             }
             return (level.get(blkloc.p).getBlock(blkloc));
@@ -37,8 +38,8 @@ public class Level {
         }
     }
 
-    public void setBlockRaw() {
-
+    public double getGlobalPressure() {
+        return Atmosphericpressure;
     }
 
     public void setBlockChunk(Point2D p, int x, int y, int z, Block b) {
@@ -50,17 +51,15 @@ public class Level {
         if (isValidBlockLoc(blkloc)) {
             level.get(blkloc.p).setBlock(blkloc.x, blkloc.y, blkloc.z, b);
 
-            if (!(b.isSolid())) {
+            if(getBlock(blkloc).getId() == 5) {
                 if (WaterBlockPos.add(blkloc)) {
-                    System.out.println("Adding Block:"+blkloc.stringBlockInfomation(this));
-
+                    System.out.println("Add Water Block:" + blkloc.stringBlockInfomation(this));
                 }
             }else{
                 if (WaterBlockPos.remove(blkloc)) {
-                    System.out.println("Removing Block:"+blkloc.stringBlockInfomation(this));
+                    System.out.println("Remove Water Block:" + blkloc.stringBlockInfomation(this));
                 }
             }
-
         }
     }
 

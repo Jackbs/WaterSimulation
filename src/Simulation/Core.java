@@ -19,7 +19,7 @@ public class Core extends MouseAdapter{
 	public int zLevel = 3;
 	
 	private int Dragging = 0; //0 if not dragging, 1 if mouse 1 dragging, 2 if mouse 2 dragging, ect
-	private double size = 3.0;
+	private double size = 1.0;
 
 	int currentblock = 1;
 	boolean SimRunning = false;
@@ -186,7 +186,7 @@ public class Core extends MouseAdapter{
 	
 	
 	public void KeyPressed(String Action){
-		System.out.println("Key Pressed:: "+Action);
+		//System.out.println("Key Pressed:: "+Action);
 
 		if(isInteger(Action)){
 			setBlockType(Action);

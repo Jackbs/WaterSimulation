@@ -93,7 +93,7 @@ public class Display {
 				UI.drawImage(ImgMap.get(new SolidBlock(currentblock,level)).GetNormalImage(1), 6, 35, 49, 49);
 			}else{
 				WaterBlock wb = new WaterBlock(currentblock,level);
-				System.out.println(wb.getId()+""+wb.getClass());
+				//System.out.println(wb.getId()+""+wb.getClass());
 				if(ImgMap.get(wb) == null){
 					System.out.println("null_stuff");
 				}
@@ -151,6 +151,10 @@ public class Display {
 				
 				if(img != null) {
 					UI.drawImage(img, Xchunkoffset + (scale * i * blksze + xOrg), Ychunkoffset + scale * j * blksze + yOrg, blksze * scale * 1.1, blksze * scale * 1.1);
+					if(((workingBlock != null)) && !workingBlock.isSolid()) {
+						UI.setFontSize((int)(6*(scale)));
+						UI.drawString(String.valueOf((int)workingBlock.getPressure()),(blksze*scale*0.15)+Xchunkoffset + (scale * (i) * blksze + xOrg), (blksze*scale*0.85)+(Ychunkoffset + scale * (j) * blksze + yOrg));
+					}
 				}
 				//UI.drawImage(Texture, i*blksze, j*blksze, blksze, blksze);
 				//UI.fillRect(i*blksze, j*blksze, blksze, blksze);
