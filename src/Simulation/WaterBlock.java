@@ -37,10 +37,7 @@ public class WaterBlock extends Block {
         return false;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
+
 
 
     /*
