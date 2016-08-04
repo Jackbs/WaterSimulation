@@ -1,9 +1,13 @@
 package Simulation;
 
+import javax.imageio.ImageIO;
 import java.awt.geom.Point2D;
 import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 /**
  * Created by Jack on 09-07-16.
@@ -37,8 +41,52 @@ public class FileIO {
         return Level;
     }
 
-    public void saveLevel(String Directory){
 
+
+
+    public Map<Block, BlockRender> getImgMap(Level level) {
+        System.out.println("Creating");
+
+        File file = new File("blockinfo");
+        Map<Block, BlockRender> ImgMap = new HashMap<>();
+        boolean[] blocks = new boolean[20];
+
+        try {
+            Scanner scanner = new Scanner(file);
+            System.out.println("Creating Imagemap from file: "+file.getName());
+            while(scanner.hasNext()){
+                String s = scanner.next();
+                String[] info = s.split(",");
+
+                //System.out.println("["+info[0]+"] ["+info[1]+"] ["+info[2]+"]");
+
+                Block b = null;
+                Arrays.fill(blocks, Boolean.FALSE);
+
+                int id = Integer.parseInt(info[0]);
+                if(id != -1) {
+                    blocks[id] = true;
+                }
+
+                if(info[1].equals("s")){
+                    b = new SolidBlock(id, level);
+                }
+                if(info[1].equals("f")){
+                    b = new FluidBlock(id, level);
+                }
+                if(b != null) {
+                    ImgMap.put(b, new BlockRender(ImageIO.read(new File("textures/"+info[2]))));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        level.setBlocks(blocks);
+        return ImgMap;
+    }
+
+    public void saveLevel(String Directory){
 
     }
 

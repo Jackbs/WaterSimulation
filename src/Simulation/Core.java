@@ -40,7 +40,7 @@ public class Core extends MouseAdapter{
 		//MCIO.ReadRegion();
 
 
-
+		level = new Level("world1");
 		display = new Display(level);
 
 		//UI.addButton("Load Chunks", this::loadChunks);
@@ -55,17 +55,17 @@ public class Core extends MouseAdapter{
 
 
 		UI.getFrame().addMouseWheelListener(this);
-		System.out.println(UI.getFrame().findComponentAt(600, 300).getClass());
+		//System.out.println(UI.getFrame().findComponentAt(600, 300).getClass());
 
 		AccessibleContext Ac = UI.getFrame().getAccessibleContext();
 
-		System.out.println("Frame info1: "+(Ac.getAccessibleName()));
-		System.out.println("Frame info2: "+(Ac.getAccessibleDescription()));
-		System.out.println("Frame info3: "+(Ac.getAccessibleChildrenCount()));
-		System.out.println("Frame info4: "+(Ac.getAccessibleChild(0).getAccessibleContext().getAccessibleName()));
+		//System.out.println("Frame info1: "+(Ac.getAccessibleName()));
+		//System.out.println("Frame info2: "+(Ac.getAccessibleDescription()));
+		//System.out.println("Frame info3: "+(Ac.getAccessibleChildrenCount()));
+		//System.out.println("Frame info4: "+(Ac.getAccessibleChild(0).getAccessibleContext().getAccessibleName()));
 
 
-		level = new Level("world1");
+
 		WaterSim = new WaterSimulation();
 
 		updateDisplay();
@@ -118,7 +118,7 @@ public class Core extends MouseAdapter{
 
 	public Block getCurrentBlock(){
 		if(currentblock == 5){
-			return new WaterBlock(currentblock,level);
+			return new FluidBlock(currentblock,level);
 		}else {
 			return new SolidBlock(currentblock,level);
 		}

@@ -3,7 +3,7 @@ package Simulation;
 /**
  * Created by Jack on 21-07-16.
  */
-public class WaterBlock extends Block {
+public class FluidBlock extends Block {
     private int id;
     private Block[] sideBlocks;
     private double maxDeltaP;
@@ -11,7 +11,7 @@ public class WaterBlock extends Block {
     private double FillLevel = 1.0;
     private final double kpaPerBlock = 9.807;
 
-    public WaterBlock(int id, Level currentLevel) {
+    public FluidBlock(int id, Level currentLevel) {
         super(id,currentLevel);
         sideBlocks = new Block[6];
     }
@@ -47,7 +47,7 @@ public class WaterBlock extends Block {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        WaterBlock that = (WaterBlock) o;
+        FluidBlock that = (FluidBlock) o;
         System.out.println("Calling equalls thisid,thatid: "+id+","+that.id);
         return id == that.id;
 

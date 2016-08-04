@@ -18,7 +18,7 @@ public class Chunk {
 			Scanner scan = new Scanner(ChunkFile);
 			int z = 0;
 			String line = scan.nextLine();
-			System.out.println("Initializing chunk: "+ ChunkFile.getName()+" With info: "+line);
+			//System.out.println("Initializing chunk: "+ ChunkFile.getName()+" With info: "+line);
 			String[] charBlock = line.split(",");
 			pos = new Point(Integer.parseInt(charBlock[0]),Integer.parseInt(charBlock[1]));
 			while (scan.hasNext()){

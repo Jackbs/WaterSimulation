@@ -8,16 +8,24 @@ import java.util.*;
  */
 public class Level {
 
+    Map<Block, BlockRender> ImgMap;
+
     Set WaterBlockPos = new HashSet<BlockLocation>();
 
-    FileIO fileIO;
+    private boolean[] blocks = new boolean[20];
+    int numblocks = 0;
+
+    private FileIO fileIO;
     private double Atmosphericpressure = 101.325;
     private Map<Point2D, Chunk> level = new HashMap<Point2D, Chunk>();
+
 
     public Level(String worldname) {
         fileIO = new FileIO();
         level = fileIO.loadLevel(worldname,this);
+        ImgMap = fileIO.getImgMap(this);
         Atmosphericpressure = 0.0;
+
     }
 
     public Map<Point2D, Chunk> getLevelmap() {
@@ -68,7 +76,7 @@ public class Level {
         if((this.getBlock(blkloc) == null)||(this.getBlock(blkloc).getId() == 0)){
             return Atmosphericpressure; //Block is air
         }else{
-            return ((WaterBlock)this.getBlock(blkloc)).getPressure();
+            return ((FluidBlock)this.getBlock(blkloc)).getPressure();
         }
     }
 
@@ -81,5 +89,26 @@ public class Level {
             return false;
         }
         return blkloc.z <= 128;
+    }
+
+    public boolean idExsists(int id){
+        return blocks[id];
+    }
+
+    public void setBlocks(boolean[] blocks){
+        System.out.println("Setting blocks");
+
+        this.blocks = blocks;
+
+        numblocks = 0;
+        for(int i = 0;i<this.blocks.length;i++){
+            if(blocks[1]){
+                numblocks++;
+            }
+        }
+    }
+
+    public Map<Block,BlockRender> getImgMap() {
+        return ImgMap;
     }
 }

@@ -16,15 +16,11 @@ import javax.imageio.ImageIO;
 import ecs100.UI;
 
 public class Display {
-	Map<Block, BlockRender> ImgMap = new HashMap<>();
-	Map<Integer, String> TextureMap = new HashMap<Integer, String>();
-	Map<Integer, Color> ColorMap = new HashMap<Integer, Color>();
+	Map<Block, BlockRender> ImgMap;
 	
 	double topXscale = 0.3;
 	double topYscale = 0.026;
-	
 
-	
 	int blksze = 10;
 	
 	double scale = 1.0;
@@ -39,26 +35,13 @@ public class Display {
 		double width = 1366; //screenSize.getWidth();
 		double height = 768; //screenSize.getHeight();
 		this.level = level;
+		ImgMap = this.level.getImgMap();
+
+
 		UI.setWindowSize((int) width, (int) height);
 		UI.initialise();
 		UI.setDivider(0.15);
 		UI.setImmediateRepaint(false);
-		CreateBlockRenders();
-	}
-
-	private void CreateBlockRenders(){
-		try {
-			System.out.println("Putting stuff in imgmap");
-			ImgMap.put(new SolidBlock(-1,level),new BlockRender(ImageIO.read(new File("void_top.png"))));
-			ImgMap.put(new SolidBlock(1,level),new BlockRender(ImageIO.read(new File("stone_top.png"))));
-			ImgMap.put(new SolidBlock(2,level),new BlockRender(ImageIO.read(new File("grass_top.png"))));
-			ImgMap.put(new SolidBlock(3,level),new BlockRender(ImageIO.read(new File("dirt_top.png"))));
-			ImgMap.put(new WaterBlock(5,level),new BlockRender(ImageIO.read(new File("water_top.png"))));
-
-		} catch (IOException e) {
-
-		}
-
 
 	}
 	
@@ -89,16 +72,19 @@ public class Display {
 		UI.drawString("Scale:"+Double.toString((double) Math.round((scale * 100)) / 100), 80, yTopWidth+4);
 
 		if(currentblock != 0) {
-			if(currentblock != 5) {
-				UI.drawImage(ImgMap.get(new SolidBlock(currentblock,level)).GetNormalImage(1), 6, 35, 49, 49);
-			}else{
-				WaterBlock wb = new WaterBlock(currentblock,level);
-				//System.out.println(wb.getId()+""+wb.getClass());
-				if(ImgMap.get(wb) == null){
-					System.out.println("null_stuff");
+			if(level.idExsists(currentblock)) {
+
+				if (currentblock != 5) {
+					UI.drawImage(ImgMap.get(new SolidBlock(currentblock, level)).GetNormalImage(1), 6, 35, 49, 49);
+				} else {
+					FluidBlock wb = new FluidBlock(currentblock, level);
+					if (ImgMap.get(wb) == null) {
+						System.out.println("null_stuff");
+					}
+					UI.drawImage(ImgMap.get(wb).GetNormalImage(1), 6, 35, 49, 49);
 				}
-				UI.drawImage(ImgMap.get(wb).GetNormalImage(1), 6, 35, 49, 49);
 			}
+
 		}else{
 			UI.setColor(Color.WHITE);
 			UI.fillRect(6, 35, 49, 49);
