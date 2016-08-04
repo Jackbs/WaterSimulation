@@ -5,14 +5,15 @@ package Simulation;
  */
 public class WaterBlock extends Block {
     private int id;
-    private double[] maxDeltaPside;
+    private Block[] sideBlocks;
     private double maxDeltaP;
     private double pressure;
     private double FillLevel = 1.0;
+    private final double kpaPerBlock = 9.807;
 
     public WaterBlock(int id, Level currentLevel) {
         super(id,currentLevel);
-        maxDeltaPside = new double[6];
+        sideBlocks = new Block[6];
     }
 
     public double getFillLevel(){
@@ -54,35 +55,42 @@ public class WaterBlock extends Block {
     */
 
 
+    private void updateSideBlocks(){
+        sideBlocks[0] = this.getBlockAbove();
+        sideBlocks[1] = this.getBlockBellow();
+        sideBlocks[2] = this.getBlockUp();
+        sideBlocks[3] = this.getBlockDown();
+        sideBlocks[4] = this.getBlockLeft();
+        sideBlocks[5] = this.getBlockRight();
+    }
+
 
     public double getMaxPressure() {
+        updateSideBlocks();
 
-        if(!this.getBlockAbove().isSolid()) {
-            //Above = getPressure() - (this.getBlockAbove()).getPressure();
-        }
-        if(!this.getBlockBellow().isSolid()) {
-            maxDeltaPside[1] = getPressure() - (this.getBlockBellow()).getPressure();
-        }
-        if(!this.getBlockUp().isSolid()) {
-            maxDeltaPside[2] = getPressure() - (this.getBlockUp()).getPressure();
-        }
-        if(!this.getBlockDown().isSolid()) {
-            maxDeltaPside[3] = getPressure() - (this.getBlockDown()).getPressure();
-        }
-        if(!this.getBlockLeft().isSolid()) {
-            maxDeltaPside[4] = getPressure() - (this.getBlockLeft()).getPressure();
-        }
-        if(!this.getBlockRight().isSolid()) {
-            maxDeltaPside[5] = getPressure() - (this.getBlockRight()).getPressure();
-        }
         maxDeltaP = 0.0;
-        for(int i = 0;i<maxDeltaPside.length;i++){
-            if(maxDeltaP<maxDeltaPside[i]){
-                maxDeltaP = maxDeltaPside[i];
+        for(int i = 0;i<sideBlocks.length;i++){
+            if(sideBlocks[i] != null) {
+                if (!sideBlocks[i].isSolid()) {
+                    double currentBlkP = (getPressure() - (sideBlocks[i].getPressure()));
+                    if(i == 0){ //block above
+                        currentBlkP = currentBlkP-kpaPerBlock;
+                        if(currentBlkP<0.01){
+                            currentBlkP = 0.0;
+                        }
+                    }
+                    if(i == 1){ //block bellow
+                        currentBlkP = currentBlkP+kpaPerBlock;
+                    }
+                    if (maxDeltaP < currentBlkP) {
+                        maxDeltaP = currentBlkP;
+                    }
+                }
             }
         }
+
         //System.out.println("Above,bellow,up,down,left,right["+Above+","+Bellow+","+Up+","+Down+","+Left+","+Right+",");
-        //double Max = Math.max(Math.max(Left,Right),Math.max(Math.max(Above,Bellow),Math.max(Down,Up)));
+
 
         return maxDeltaP;
     }
