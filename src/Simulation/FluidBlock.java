@@ -1,5 +1,8 @@
 package Simulation;
 
+
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+
 /**
  * Created by Jack on 21-07-16.
  */
@@ -10,6 +13,7 @@ public class FluidBlock extends Block {
     private double pressure;
     private double FillLevel = 1.0;
     private final double kpaPerBlock = 9.807;
+    private Vector3D inflowvector;
 
     public FluidBlock(int id, Level currentLevel) {
         super(id,currentLevel);
