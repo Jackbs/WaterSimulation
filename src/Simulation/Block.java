@@ -57,11 +57,7 @@ public class Block {
     }
 
 
-
-
-    public Block getBlockAbove(){
-        return currentLevel.getBlock(blkloc.offsetBlkLoc(0,0,1));
-    }
+    public Block getBlockAbove(){return currentLevel.getBlock(blkloc.offsetBlkLoc(0,0,1)); }
 
     public Block getBlockBellow(){
         return currentLevel.getBlock(blkloc.offsetBlkLoc(0,0,-1));

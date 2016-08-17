@@ -9,6 +9,7 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 public class FluidBlock extends Block {
     private int id;
     private Block[] sideBlocks;
+    private double[] sideFluidFlow; //Negitive for ourflow, positive for inflow
     private double maxDeltaP;
     private double pressure;
     private double FillLevel = 1.0;
@@ -26,7 +27,7 @@ public class FluidBlock extends Block {
 
     @Override
     public double getPressure(){
-        return pressure;
+        return pressure*FillLevel;
     }
 
     public void setPressure(double p){
@@ -58,6 +59,14 @@ public class FluidBlock extends Block {
     }
     */
 
+    //Set out flow velosity
+    public void setOutflowVelosity(){
+
+    }
+
+    public void setInflowVelosity(double Inflow, int side) {
+        sideFluidFlow[side] = Inflow;
+    }
 
     private void updateSideBlocks(){
         sideBlocks[0] = this.getBlockAbove();
