@@ -26,14 +26,16 @@ public class Core extends MouseAdapter{
 
 	Level level;
 	
-	double scale = 2.0;
+	double scale = 3.0;
 	double xOrg = 0.0;
 	double yOrg = 0.0;
 	double lastX = 0.0;
 	double lastY = 0.0;
 	double lastxOrg = 0.0;
 	double lastyOrg = 0.0;
-	
+
+	int overlayMode = 1;
+
 	public Core() {
 		
 		//MCIO = new MinecraftIO();
@@ -89,6 +91,7 @@ public class Core extends MouseAdapter{
 	private void stopSimulation() {
 		SimRunning = false;
 		UI.println("Simulation stopped");
+		WaterSim.Reset();
 	}
 
 	public void doWaterSimTick(){
@@ -153,7 +156,7 @@ public class Core extends MouseAdapter{
 	}
 	
 	public void updateDisplay(){
-		display.updateDisplay(level,zLevel, xOrg, yOrg, scale,currentblock);
+		display.updateDisplay(level,zLevel, xOrg, yOrg, scale,currentblock,overlayMode);
 	}
 	
 	
@@ -187,7 +190,6 @@ public class Core extends MouseAdapter{
 	
 	public void KeyPressed(String Action){
 		//System.out.println("Key Pressed:: "+Action);
-
 		if(isInteger(Action)){
 			setBlockType(Action);
 		}else if(Action == "Period"){
@@ -198,6 +200,21 @@ public class Core extends MouseAdapter{
 			if(zLevel>0){
 				zLevel--;
 			}
+		}else if(Action.equals("p")){
+			overlayMode = 1;
+			System.out.println("On Pressure Overlay mode");
+		}else if(Action.equals("v")){
+			overlayMode = 2;
+			System.out.println("On Velosity Overlay mode");
+		}else if(Action.equals("e")){
+			overlayMode = 3;
+			System.out.println("On E value overlay mode");
+		}else if(Action.equals("f")){
+			overlayMode = 4;
+			System.out.println("On fill level overlay mode");
+		}else if(Action.equals("d")){
+			overlayMode = 5;
+			System.out.println("On depth value overlay mode");
 		}
 		updateDisplay();
 	}
@@ -229,11 +246,13 @@ public class Core extends MouseAdapter{
 			System.out.println("Stopped Dragging");
 			Dragging = 0;
 		}
+
 	}
 
 	/*
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
+
 	}
 
 	@Override
@@ -248,15 +267,16 @@ public class Core extends MouseAdapter{
 		if(arg0.getButton() == 1) {
 			paintBlocks(BlockLocFromMouse(arg0.getX(), arg0.getY()));
 			Dragging = 1;
-		}else if(arg0.getButton() == 2){
-			Dragging = 2;
-			lastX = arg0.getX();
-			lastY = arg0.getY();
-			lastxOrg = xOrg;
-			lastyOrg = yOrg;
-			//System.out.println("PRESSED");
-			updateDisplay();
-			System.out.println("Started Dragging");
+        }else if(arg0.getButton() == 3){
+            level.getBlock((BlockLocFromMouse(arg0.getX(), arg0.getY()))).printAllData();
+		}else if(arg0.getButton() == 2) {
+            Dragging = 2;
+            lastX = arg0.getX();
+            lastY = arg0.getY();
+            lastxOrg = xOrg;
+            lastyOrg = yOrg;
+            //System.out.println("PRESSED");
+            updateDisplay();
 		}else{
 			Dragging = 0;
 		}

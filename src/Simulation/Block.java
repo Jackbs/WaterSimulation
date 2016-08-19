@@ -44,7 +44,7 @@ public class Block {
         if(id == 0) {
             return currentLevel.getGlobalPressure();
         }else{
-            return 999999999;
+            return 6969;
         }
     }
 
@@ -56,6 +56,19 @@ public class Block {
         }
     }
 
+    public boolean isFluid() {
+        return false;
+    }
+
+    public void printAllData(){
+        System.out.print(blkloc.stringBlockInfomation(currentLevel));
+        System.out.format(" [%s,%s] Pressure:[%.1f]", isSolid() ? "Solid" : "Nonsolid", isFluid() ? "Fluid" : "No Fluid",getPressure());
+        if(isFluid()) {
+            ((FluidBlock)this).FluidInfo();
+        }else{
+            System.out.println();
+        }
+    }
 
     public Block getBlockAbove(){return currentLevel.getBlock(blkloc.offsetBlkLoc(0,0,1)); }
 

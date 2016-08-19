@@ -45,12 +45,12 @@ public class Display {
 
 	}
 	
-	public void updateDisplay(Level level, int zLevel, double x, double y, double scale,int currentblock) {
+	public void updateDisplay(Level level, int zLevel, double x, double y, double scale, int currentblock,int Overlaymode) {
 		this.xOrg = x;
 		this.yOrg = y;		
 		this.scale = scale;
 
-		level.getLevelmap().forEach( (k,v) -> ShowChunk(v,k, zLevel) );
+		level.getLevelmap().forEach( (k,v) -> ShowChunk(v,k, zLevel,Overlaymode) );
 		
 		//ShowChunk(level, zLevel);
 		ShowUI(zLevel, currentblock);
@@ -93,7 +93,7 @@ public class Display {
 		UI.drawRect(6, 35, 49, 49);
 	}
 	
-	public void ShowChunk(Chunk chunk, Point2D Point, int zLevel) { //will be changed to 2D array of chunks in future	
+	public void ShowChunk(Chunk chunk, Point2D Point, int zLevel,int Overlaymode) { //will be changed to 2D array of chunks in future
 		double Xchunkoffset = 16*(scale*blksze*Point.getX());
 		double Ychunkoffset = 16*(scale*blksze*Point.getY());
 		UI.setColor(Color.BLACK);
@@ -139,8 +139,23 @@ public class Display {
 					UI.drawImage(img, Xchunkoffset + (scale * i * blksze + xOrg), Ychunkoffset + scale * j * blksze + yOrg, blksze * scale * 1.1, blksze * scale * 1.1);
 					if(((workingBlock != null)) && !workingBlock.isSolid()) {
 						UI.setFontSize((int)(6*(scale)));
-						UI.drawString(String.valueOf((int)workingBlock.getPressure()),(blksze*scale*0.15)+Xchunkoffset + (scale * (i) * blksze + xOrg), (blksze*scale*0.85)+(Ychunkoffset + scale * (j) * blksze + yOrg));
-					}
+						String value = "N/A";
+						if(Overlaymode == 1){
+							value = String.valueOf((int)workingBlock.getPressure());
+						}
+						if(workingBlock.isFluid()) {
+							if (Overlaymode == 2) {
+								value = String.valueOf((int) ((FluidBlock) workingBlock).sideFluidFlow[5]);
+							}else if (Overlaymode == 3) {
+								value = String.valueOf((int) ((FluidBlock) workingBlock).getTotalEvalue());
+							}else if(Overlaymode == 4) {
+								value = String.valueOf((int) ((FluidBlock) workingBlock).getFillLevel());
+							}else if(Overlaymode == 5) {
+								value = String.valueOf((int) ((FluidBlock) workingBlock).getDepth());
+							}
+						}
+						UI.drawString(value,(blksze*scale*0.15)+Xchunkoffset + (scale * (i) * blksze + xOrg), (blksze*scale*0.85)+(Ychunkoffset + scale * (j) * blksze + yOrg));
+						}
 				}
 				//UI.drawImage(Texture, i*blksze, j*blksze, blksze, blksze);
 				//UI.fillRect(i*blksze, j*blksze, blksze, blksze);

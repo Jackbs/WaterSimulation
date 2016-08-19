@@ -7,32 +7,53 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
  * Created by Jack on 21-07-16.
  */
 public class FluidBlock extends Block {
+    private static final double kpaPerBlock = 9.807;
+    private static final double Density = 1000.0;
+    private static final double Gravity = 9.807;
+    private static final double AtmosP = 0.0;
+
     private int id;
     private Block[] sideBlocks;
-    private double[] sideFluidFlow; //Negitive for ourflow, positive for inflow
+    public double[] sideFluidFlow = {0.0,0.0,0.0,0.0,0.0,0.0}; //Negitive for ourflow, positive for inflow
     private double maxDeltaP;
     private double pressure;
-    private double FillLevel = 1.0;
-    private final double kpaPerBlock = 9.807;
+    private double FillLevel;
+    private double depth;
+
+    private double TotalEvalue,GravEvalue,VelosEvalue;
+
     private Vector3D inflowvector;
 
     public FluidBlock(int id, Level currentLevel) {
         super(id,currentLevel);
+        pressure = 0.0;
         sideBlocks = new Block[6];
+        FillLevel = 1.0;
+        TotalEvalue = 0.0;
+        depth = 0.0;
     }
 
     public double getFillLevel(){
         return FillLevel;
     }
 
+    public double getDepth(){
+        return depth;
+    }
+
+    public double getTotalEvalue(){
+        return TotalEvalue;
+    }
+
     @Override
     public double getPressure(){
-        return pressure*FillLevel;
+        return -1*pressure/1000;
     }
 
     public void setPressure(double p){
         pressure = p;
     }
+
     public void setFillLevel(double fl){
         FillLevel = fl;
     }
@@ -43,24 +64,76 @@ public class FluidBlock extends Block {
         return false;
     }
 
-
-
-
-    /*
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        FluidBlock that = (FluidBlock) o;
-        System.out.println("Calling equalls thisid,thatid: "+id+","+that.id);
-        return id == that.id;
-
+    public double calcVelosity(double ExternalEval, int side){
+        double value;
+        value = Math.sqrt(2*((ExternalEval - pressure)/Density));
+        //System.out.println("Calculating Velosity V(m/s),ExternalEval,EvalGrav,pressure ["+value+","+ExternalEval+","+GravEvalue+","+pressure+"]");
+        return value;
     }
-    */
+
+    public void calcPressureFromH(double ExternalEval, int side){
+        pressure = (ExternalEval - calcEvalueGrav() - calcEvalueVelos(side));
+    }
+
+    public void calcPressure(double ExternalEval, int side){
+        pressure = (ExternalEval - calcEvalueGrav() - calcEvalueVelos(side));
+    }
+
+    public double calcEvalueGrav(){
+        if(FillLevel != 0){
+            GravEvalue = Density*Gravity*(depth+FillLevel);
+        }else{
+            GravEvalue = 0.0;
+        }
+        return GravEvalue;
+    }
+
+    public double calcEvalueVelos(int side){
+        if(sideFluidFlow[side] != 0.0){
+            VelosEvalue = 0.5*Density*Math.pow(sideFluidFlow[side], 2);
+        }else{
+            VelosEvalue = 0.0;
+        }
+        return VelosEvalue;
+    }
+
+    public double calcEvalue(int side){ //side 0,1,2,3,4,5 = Above,Bellow,Up,Down,Left,Right
+        TotalEvalue = pressure + calcEvalueGrav() + calcEvalueVelos(side);
+        //System.out.println("Calculating Total E Value Total,Pressure,EvalGrav,EvalVel ["+TotalEvalue+","+pressure+","+GravEvalue+","+VelosEvalue+"]");
+        return TotalEvalue;
+    }
 
     //Set out flow velosity
     public void setOutflowVelosity(){
+        updateSideBlocks();
+        for(int i = 0;i<sideBlocks.length;i++){
+            if(sideBlocks[i] != null) {
+                if(!sideBlocks[i].isSolid()) {
+                    calcEvalue(i);
+                    if (sideBlocks[i].isFluid()){
+                        sideFluidFlow[i] = calcVelosity(((FluidBlock) sideBlocks[i]).calcEvalue(getOppisateside(i)), i);
+                    } else {
+                        if(i == 0){
+                            sideFluidFlow[i] = calcVelosity(AtmosP-Density*Gravity, i);
+                        }else if(i == 1){
+                            sideFluidFlow[i] = calcVelosity(AtmosP+Density*Gravity, i);
+                        }else{
+                            sideFluidFlow[i] = calcVelosity(AtmosP, i);
+                        }
+                        currentLevel.setBlock(sideBlocks[i].getBlkLoc(),new FluidBlock(5,currentLevel));
+                        ((FluidBlock)(currentLevel.getBlock(sideBlocks[i].getBlkLoc()))).setInflowVelosity(sideFluidFlow[i]*-1,getOppisateside(i));
+                        //System.out.println("Outflow,Side[" + sideFluidFlow[i] + "," + i + "]");
+                    }
+
+
+                    if (sideFluidFlow[i] != 0.0) {
+                        System.out.println("Outflow,Side[" + sideFluidFlow[i] + "," + i + "]");
+                    }
+                }
+
+            }
+
+        }
 
     }
 
@@ -113,5 +186,42 @@ public class FluidBlock extends Block {
         int result = super.hashCode();
         result = 31 * result + id;
         return result;
+    }
+
+    @Override
+    public boolean isFluid() {
+        return true;
+    }
+
+    public void setDepth(double depth) {
+        this.depth = depth;
+        calcEvalue(0);
+    }
+
+    public void FluidInfo(){
+        System.out.format("Velosity[top,bottom,up,down,left,right] = [%.1f,%.1f,%.1f,%.1f,%.1f,%.1f] Eval:%.1f  Fill Level:%.1f Depth:%.1f ]",sideFluidFlow[0],sideFluidFlow[1],sideFluidFlow[2],sideFluidFlow[3],sideFluidFlow[4],sideFluidFlow[5],TotalEvalue,FillLevel,depth);
+        System.out.println();
+    }
+
+    public int getOppisateside(int side){
+        if(side == 0){
+            return 1;
+        }
+        if(side == 1){
+            return 0;
+        }
+        if(side == 2){
+            return 3;
+        }
+        if(side == 3){
+            return 2;
+        }
+        if(side == 4){
+            return 5;
+        }
+        if(side == 5){
+            return 4;
+        }
+        return -1;
     }
 }

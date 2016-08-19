@@ -61,11 +61,11 @@ public class Level {
 
             if(getBlock(blkloc).getId() == 5) {
                 if (WaterBlockPos.add(blkloc)) {
-                    System.out.println("Add Water Block:" + blkloc.stringBlockInfomation(this));
+                    //System.out.println("Add Water Block:" + blkloc.stringBlockInfomation(this));
                 }
             }else{
                 if (WaterBlockPos.remove(blkloc)) {
-                    System.out.println("Remove Water Block:" + blkloc.stringBlockInfomation(this));
+                    //System.out.println("Remove Water Block:" + blkloc.stringBlockInfomation(this));
                 }
             }
         }
