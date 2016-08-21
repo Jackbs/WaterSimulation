@@ -9,6 +9,7 @@ import java.util.*;
 public class WaterSimulation{
     private Level workingLevel;
     private Set WaterGroup1 = new HashSet<BlockLocation>();
+    private List WaterSortedByP = new ArrayList<FluidBlock>();
     private double Atmosphericpressure = 101.325;
     private final double kpaPerBlock = 9.807;
     public int tick = 0;
@@ -44,13 +45,24 @@ public class WaterSimulation{
         FluidBlock fb1 = (FluidBlock)workingLevel.getBlock(highestliq);
         double eval = (fb1.calcEvalue(1));
 
-        List WaterSortedByP = new ArrayList<FluidBlock>();
 
+        //Put fluidBlocks into list based on there block locations, as well as calculating the pressure of them releitive to the highest block
         for (Object b : WaterGroup1) {
             FluidBlock fb = ((FluidBlock)workingLevel.getBlock((BlockLocation)b));
             fb.calcPressure(0.0,0); //Calculate Pressure relitive to the highest block
-            fb.printAllData();
+            //fb.printAllData();
             WaterSortedByP.add(fb);
+        }
+
+        //Calculate the MaxPressure for each block, so it does not have to be calculated each time it is compeared in sorting
+        for(int i = 0;i<WaterSortedByP.size();i++){
+            ((FluidBlock)WaterSortedByP.get(i)).calcMaxPressure();
+        }
+
+        Collections.sort(WaterSortedByP, new MaxPComparator());
+
+        for(int i = 0;i<WaterSortedByP.size();i++){
+            ((FluidBlock)WaterSortedByP.get(i)).printAllData();
         }
 
         //Need to add in sorting list
@@ -106,6 +118,14 @@ public class WaterSimulation{
             FluidBlock thisFluidBlock = (FluidBlock)workingLevel.getBlock(blkloc);
             thisFluidBlock.setDepth(topdepth);
             updateDepth(blkloc.offsetBlkLoc(0, 0, -1), topdepth+1);
+        }
+    }
+
+    class MaxPComparator implements Comparator<FluidBlock> {
+        public int compare(FluidBlock f1, FluidBlock f2) {
+            if (f1.getMaxPressure() < f2.getMaxPressure()) return -1;
+            if (f1.getMaxPressure() > f2.getMaxPressure()) return 1;
+            return 0;
         }
     }
 

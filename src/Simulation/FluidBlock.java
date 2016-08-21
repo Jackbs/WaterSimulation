@@ -15,14 +15,15 @@ public class FluidBlock extends Block {
     private int id;
     private Block[] sideBlocks;
     public double[] sideFluidFlow = {0.0,0.0,0.0,0.0,0.0,0.0}; //Negitive for ourflow, positive for inflow
-    private double maxDeltaP;
+
+    private double MaxPressure;
     private double pressure;
     private double FillLevel;
     private double depth;
 
     private double TotalEvalue,GravEvalue,VelosEvalue;
-
     private Vector3D inflowvector;
+
 
     public FluidBlock(int id, Level currentLevel) {
         super(id,currentLevel);
@@ -32,6 +33,8 @@ public class FluidBlock extends Block {
         TotalEvalue = 0.0;
         depth = 0.0;
     }
+
+    public double getMaxPressure(){return MaxPressure;}
 
     public double getFillLevel(){
         return FillLevel;
@@ -151,10 +154,10 @@ public class FluidBlock extends Block {
     }
 
 
-    public double getMaxPressure() {
+    public double calcMaxPressure(){
         updateSideBlocks();
 
-        maxDeltaP = 0.0;
+        double maxDeltaP = 0.0;
         for(int i = 0;i<sideBlocks.length;i++){
             if(sideBlocks[i] != null) {
                 if (!sideBlocks[i].isSolid()) {
@@ -177,7 +180,7 @@ public class FluidBlock extends Block {
 
         //System.out.println("Above,bellow,up,down,left,right["+Above+","+Bellow+","+Up+","+Down+","+Left+","+Right+",");
 
-
+        MaxPressure = maxDeltaP;
         return maxDeltaP;
     }
 
@@ -224,4 +227,6 @@ public class FluidBlock extends Block {
         }
         return -1;
     }
+
+
 }
