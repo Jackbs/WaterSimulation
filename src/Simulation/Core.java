@@ -37,7 +37,10 @@ public class Core extends MouseAdapter{
 	int overlayMode = 1;
 
 	public Core() {
-		
+		UI.addButton("Test", this::dotest);
+		dotest();
+
+		/*
 		//MCIO = new MinecraftIO();
 		//MCIO.ReadRegion();
 
@@ -74,8 +77,64 @@ public class Core extends MouseAdapter{
 		UI.getFrame().findComponentAt(600, 300).addMouseListener(this);
 
 		UI.println("Simulation Stopped");
+		*/
 
 	}
+
+	private void dotest(){
+		double rectheight = 100;
+		double timescale = 0.1;
+		double h1 = 1.0,h2 = 1.0,h3 = 0.0;
+
+
+		double p1 = 0.0;
+		double p2 = 0.0;
+		double p3 = 0.0;
+		double v2_in = 0.0;
+		double v3_in = 0.0;
+		double v4_in = 0.0;
+
+		for(int i = 0;i<500;i++){
+			UI.sleep(10);
+
+			p1 = 9.8*1000*h1; p2 = 9.8*1000*h2; p3 = 9.8*1000*h3;
+
+			double v2_in_temp = Math.sqrt((p1-p2)/500);
+			double v3_in_temp = Math.sqrt((p2-p3)/500);
+			double v4_in_temp = Math.sqrt((p3)/500);
+
+			v2_in = v2_in_temp*timescale;
+			v3_in = v3_in_temp*timescale+v2_in*0.8;
+			v4_in = v4_in_temp*timescale;
+
+			double height_removed_v1 = ((Math.pow(v2_in,2)*500)/9800);
+			double height_added_v2 = ((Math.pow(v2_in*0.2,2)*500)/9800);
+			double height_added_v2_v3 = ((Math.pow(v3_in,2)*500)/9800);
+			double height_added_v3_v4 = ((Math.pow(v4_in,2)*500)/9800);
+
+			h1 = h1 - height_removed_v1;
+			h2 = h2 + height_added_v2;
+
+			h2 = h2 - height_added_v2_v3;
+			h3 = h3 + height_added_v2_v3;
+
+			//h3 = h3 - height_added_v3_v4;
+
+			System.out.print(h1 +"," + h2+","+h3);
+			System.out.print(":=:"+v2_in+ "," + v3_in);
+			//System.out.print(":=:"+p1+","+p2+ "," + p3);
+			System.out.println();
+
+			UI.setImmediateRepaint(false);
+			UI.clearGraphics();
+			UI.setColor(Color.blue);
+			UI.fillRect(0, rectheight-rectheight*h1, 100, rectheight*h1);
+			UI.fillRect(102, rectheight-rectheight*h2, 100, rectheight*h2);
+			UI.fillRect(204, rectheight-rectheight*h3, 100, rectheight*h3);
+			UI.repaintAllGraphics();
+		}
+	}
+
 
 	private void playPause() {
 		SimRunning = !(SimRunning);
