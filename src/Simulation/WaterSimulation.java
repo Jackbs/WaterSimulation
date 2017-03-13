@@ -65,7 +65,7 @@ public class WaterSimulation{
             ((FluidBlock)WaterSortedByP.get(i)).printAllData();
         }
 
-        //Need to add in sorting list
+
 
         tick++;
         return workingLevel;
@@ -123,8 +123,8 @@ public class WaterSimulation{
 
     class MaxPComparator implements Comparator<FluidBlock> {
         public int compare(FluidBlock f1, FluidBlock f2) {
-            if (f1.getMaxPressure() < f2.getMaxPressure()) return -1;
-            if (f1.getMaxPressure() > f2.getMaxPressure()) return 1;
+            if (f1.getMaxPressure() < f2.getMaxPressure()) return 1;
+            if (f1.getMaxPressure() > f2.getMaxPressure()) return -1;
             return 0;
         }
     }

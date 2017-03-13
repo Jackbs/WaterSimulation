@@ -54,8 +54,6 @@ public class Core extends MouseAdapter{
 		UI.setKeyListener(this::KeyPressed);
 		//UI.setMouseMotionListener(this :: doMouse);
 
-
-
 		UI.getFrame().addMouseWheelListener(this);
 		//System.out.println(UI.getFrame().findComponentAt(600, 300).getClass());
 

@@ -202,7 +202,7 @@ public class FluidBlock extends Block {
     }
 
     public void FluidInfo(){
-        System.out.format("Velosity[top,bottom,up,down,left,right] = [%.1f,%.1f,%.1f,%.1f,%.1f,%.1f] Eval:%.1f  Fill Level:%.1f Depth:%.1f ]",sideFluidFlow[0],sideFluidFlow[1],sideFluidFlow[2],sideFluidFlow[3],sideFluidFlow[4],sideFluidFlow[5],TotalEvalue,FillLevel,depth);
+        System.out.format(" Max deltaP:%.1f Velosity[top,bottom,up,down,left,right] = [%.1f,%.1f,%.1f,%.1f,%.1f,%.1f] Eval:%.1f  Fill Level:%.1f Depth:%.1f ]",getMaxPressure(),sideFluidFlow[0],sideFluidFlow[1],sideFluidFlow[2],sideFluidFlow[3],sideFluidFlow[4],sideFluidFlow[5],TotalEvalue,FillLevel,depth);
         System.out.println();
     }
 
