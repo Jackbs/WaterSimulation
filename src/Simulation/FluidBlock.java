@@ -7,14 +7,16 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
  * Created by Jack on 21-07-16.
  */
 public class FluidBlock extends Block {
-    private static final double kpaPerBlock = 9.807;
+    private static final double kpaPerBlock = 9.80665;
     private static final double Density = 1000.0;
     private static final double Gravity = 9.807;
     private static final double AtmosP = 0.0;
 
     private int id;
     private Block[] sideBlocks;
-    public double[] sideFluidFlow = {0.0,0.0,0.0,0.0,0.0,0.0}; //Negitive for ourflow, positive for inflow
+    public double[] sideFluidFlow = {0.0,0.0,0.0,0.0,0.0,0.0}; //Positive for ourflow, Negitive for inflow
+    public double[] outwardEnergy = {0.0,0.0,0.0,0.0,0.0,0.0}; //Above, Bellow, Up down left right
+    public boolean[] isOutFlow = {false,false,false,false,false,false}; //Above, Bellow, Up down left right
 
     private double MaxPressure;
     private double pressure;
@@ -32,6 +34,7 @@ public class FluidBlock extends Block {
         FillLevel = 1.0;
         TotalEvalue = 0.0;
         depth = 0.0;
+
     }
 
     public double getMaxPressure(){return MaxPressure;}
@@ -49,9 +52,7 @@ public class FluidBlock extends Block {
     }
 
     @Override
-    public double getPressure(){
-        return -1*pressure/1000;
-    }
+    public double getPressure(){return pressure/1000;}
 
     public void setPressure(double p){
         pressure = p;
@@ -74,8 +75,39 @@ public class FluidBlock extends Block {
         return value;
     }
 
-    public void calcPressureFromH(double ExternalEval, int side){
-        pressure = (ExternalEval - calcEvalueGrav() - calcEvalueVelos(side));
+    public void findoutwardVelosity(){
+        for(int side = 2;side<6;side++){
+            //System.out.println(sideBlocks[side]+","+side);
+            if(sideBlocks[side] == null) {
+
+            }else {
+                double netenergy;
+                sideBlocks[side].printAllData();
+                if(sideBlocks[side].isSolid()) {
+
+                }else{
+                    if(!sideBlocks[side].isFluid()){ //is the block air?
+                        netenergy = outwardEnergy[side];
+                    }else {
+                        netenergy = outwardEnergy[side] - ((FluidBlock) sideBlocks[side]).outwardEnergy[getOppisateside(side)];
+                    }
+                    if(netenergy>0){ //is energy flowing out?
+                        sideFluidFlow[side] = Math.sqrt((netenergy*2)/Density);
+                    }
+                }
+            }
+
+        }
+    }
+
+    public void findoutwardEnergy(){
+        for(int side = 0;side<6;side++){
+            outwardEnergy[side] = Math.pow(sideFluidFlow[side],2)*Density*0.5 + pressure;
+        }
+    }
+
+    public void findPressureFromH(){
+        pressure = FillLevel*9.80665*Density;
     }
 
     public void calcPressure(double ExternalEval, int side){
@@ -144,7 +176,7 @@ public class FluidBlock extends Block {
         sideFluidFlow[side] = Inflow;
     }
 
-    private void updateSideBlocks(){
+    public void updateSideBlocks(){
         sideBlocks[0] = this.getBlockAbove();
         sideBlocks[1] = this.getBlockBellow();
         sideBlocks[2] = this.getBlockUp();
@@ -202,7 +234,7 @@ public class FluidBlock extends Block {
     }
 
     public void FluidInfo(){
-        System.out.format(" Max deltaP:%.1f Velosity[top,bottom,up,down,left,right] = [%.1f,%.1f,%.1f,%.1f,%.1f,%.1f] Eval:%.1f  Fill Level:%.1f Depth:%.1f ]",getMaxPressure(),sideFluidFlow[0],sideFluidFlow[1],sideFluidFlow[2],sideFluidFlow[3],sideFluidFlow[4],sideFluidFlow[5],TotalEvalue,FillLevel,depth);
+        System.out.format(" Max deltaP:%.1f Velosity[top,bottom,up,down,left,right] = \nVelo[%.1f,%.1f,%.1f,%.1f,%.1f,%.1f] \nEval[%.1f,%.1f,%.1f,%.1f,%.1f,%.1f]  Fill Level:%.1f Depth:%.1f ]",getMaxPressure(),sideFluidFlow[0],sideFluidFlow[1],sideFluidFlow[2],sideFluidFlow[3],sideFluidFlow[4],sideFluidFlow[5],outwardEnergy[0],outwardEnergy[1],outwardEnergy[2],outwardEnergy[3],outwardEnergy[4],outwardEnergy[5],FillLevel,depth);
         System.out.println();
     }
 

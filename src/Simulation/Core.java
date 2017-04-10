@@ -37,9 +37,6 @@ public class Core extends MouseAdapter{
 	int overlayMode = 1;
 
 	public Core() {
-
-
-
 		//MCIO = new MinecraftIO();
 		//MCIO.ReadRegion();
 
@@ -76,12 +73,7 @@ public class Core extends MouseAdapter{
 		UI.getFrame().findComponentAt(600, 300).addMouseListener(this);
 
 		UI.println("Simulation Stopped");
-
-
 	}
-
-
-
 
 	private void playPause() {
 		SimRunning = !(SimRunning);
@@ -250,7 +242,6 @@ public class Core extends MouseAdapter{
 			System.out.println("Stopped Dragging");
 			Dragging = 0;
 		}
-
 	}
 
 	/*

@@ -9,6 +9,7 @@ import java.util.*;
 public class WaterSimulation{
     private Level workingLevel;
     private Set WaterGroup1 = new HashSet<BlockLocation>();
+    private Set WaterBlocks;
     private List WaterSortedByP = new ArrayList<FluidBlock>();
     private double Atmosphericpressure = 101.325;
     private final double kpaPerBlock = 9.807;
@@ -19,7 +20,9 @@ public class WaterSimulation{
     }
 
     public Level doWaterSimTick(Level ThisLevel){
-        WaterGroup1.clear();
+        WaterBlocks = ThisLevel.WaterBlockPos;
+
+        //WaterGroup1.clear();
         workingLevel = ThisLevel;
         System.out.println("Doing Sim tick["+tick+"]");
 
@@ -46,6 +49,27 @@ public class WaterSimulation{
         double eval = (fb1.calcEvalue(1));
 
 
+        //Get Pressure at bottem from height
+        for (Object b : WaterGroup1) {
+            FluidBlock fb = ((FluidBlock)workingLevel.getBlock((BlockLocation)b));
+            fb.updateSideBlocks();
+
+            fb.sideFluidFlow.setZero();
+            fb.findPressureFromH();
+
+        }
+
+        for (Object b : WaterGroup1) {
+            FluidBlock fb = ((FluidBlock)workingLevel.getBlock((BlockLocation)b));
+            fb.findoutwardEnergy();
+        }
+
+        for (Object b : WaterGroup1) {
+            FluidBlock fb = ((FluidBlock)workingLevel.getBlock((BlockLocation)b));
+            fb.findoutwardVelosity();
+        }
+
+        /*
         //Put fluidBlocks into list based on there block locations, as well as calculating the pressure of them releitive to the highest block
         for (Object b : WaterGroup1) {
             FluidBlock fb = ((FluidBlock)workingLevel.getBlock((BlockLocation)b));
@@ -64,6 +88,7 @@ public class WaterSimulation{
         for(int i = 0;i<WaterSortedByP.size();i++){
             ((FluidBlock)WaterSortedByP.get(i)).printAllData();
         }
+        */
 
 
 

@@ -61,6 +61,7 @@ public class Level {
 
             if(getBlock(blkloc).getId() == 5) {
                 if (WaterBlockPos.add(blkloc)) {
+                    ((FluidBlock)b).updateSideBlocks();
                     //System.out.println("Add Water Block:" + blkloc.stringBlockInfomation(this));
                 }
             }else{
