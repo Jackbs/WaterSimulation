@@ -61,8 +61,8 @@ public class Block {
     }
 
     public void printAllData(){
-        System.out.print(blkloc.stringBlockInfomation(currentLevel));
-        System.out.format(" [%s,%s] Pressure:[%.1f]", isSolid() ? "Solid" : "Nonsolid", isFluid() ? "Fluid" : "No Fluid",getPressure());
+        System.out.print("["+id+"]"+blkloc.stringBlockInfomation(currentLevel));
+        System.out.format("[%s,%s] Pressure:[%.1f]", isSolid() ? "Solid" : "Nonsolid", isFluid() ? "Fluid" : "No Fluid",getPressure());
         if(isFluid()) {
             ((FluidBlock)this).FluidInfo();
         }else{

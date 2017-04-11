@@ -12,6 +12,8 @@ public class FluidBlock extends Block {
     private static final double Gravity = 9.807;
     private static final double AtmosP = 0.0;
 
+    private static final double FrameMillis = 200.0; //the time between frames in millis
+
     private int id;
     private Block[] sideBlocks;
     public double[] sideFluidFlow = {0.0,0.0,0.0,0.0,0.0,0.0}; //Positive for ourflow, Negitive for inflow
@@ -36,6 +38,8 @@ public class FluidBlock extends Block {
         depth = 0.0;
 
     }
+
+    public void setZero(){for(int i = 0;i<sideFluidFlow.length;i++){sideFluidFlow[i] = 0;}}
 
     public double getMaxPressure(){return MaxPressure;}
 
@@ -76,13 +80,14 @@ public class FluidBlock extends Block {
     }
 
     public void findoutwardVelosity(){
+        //printAllData();
         for(int side = 2;side<6;side++){
             //System.out.println(sideBlocks[side]+","+side);
             if(sideBlocks[side] == null) {
 
             }else {
                 double netenergy;
-                sideBlocks[side].printAllData();
+                //5sideBlocks[side].printAllData();
                 if(sideBlocks[side].isSolid()) {
 
                 }else{
@@ -93,6 +98,9 @@ public class FluidBlock extends Block {
                     }
                     if(netenergy>0){ //is energy flowing out?
                         sideFluidFlow[side] = Math.sqrt((netenergy*2)/Density);
+                        isOutFlow[side] = true;
+                    }else{
+                        isOutFlow[side] = false;
                     }
                 }
             }
@@ -105,6 +113,24 @@ public class FluidBlock extends Block {
             outwardEnergy[side] = Math.pow(sideFluidFlow[side],2)*Density*0.5 + pressure;
         }
     }
+
+    public void OutputWater(){
+        for(int side = 2;side<6;side++){
+            if(isOutFlow[side]){
+                if(!(sideBlocks[side].isSolid()) && !(sideBlocks[side].isFluid())){
+                    FluidBlock toadd = new FluidBlock(5,currentLevel);
+                    toadd.setFillLevel(0.0);
+                    currentLevel.setBlock(sideBlocks[side].getBlkLoc(),toadd);
+                }
+                updateSideBlocks();
+                if(!sideBlocks[side].isSolid()) {
+                    ((FluidBlock) sideBlocks[side]).sideFluidFlow[getOppisateside(side)] = sideFluidFlow[side];
+                }
+            }
+        }
+    }
+
+
 
     public void findPressureFromH(){
         pressure = FillLevel*9.80665*Density;
@@ -223,6 +249,8 @@ public class FluidBlock extends Block {
         return result;
     }
 
+
+
     @Override
     public boolean isFluid() {
         return true;
@@ -234,7 +262,7 @@ public class FluidBlock extends Block {
     }
 
     public void FluidInfo(){
-        System.out.format(" Max deltaP:%.1f Velosity[top,bottom,up,down,left,right] = \nVelo[%.1f,%.1f,%.1f,%.1f,%.1f,%.1f] \nEval[%.1f,%.1f,%.1f,%.1f,%.1f,%.1f]  Fill Level:%.1f Depth:%.1f ]",getMaxPressure(),sideFluidFlow[0],sideFluidFlow[1],sideFluidFlow[2],sideFluidFlow[3],sideFluidFlow[4],sideFluidFlow[5],outwardEnergy[0],outwardEnergy[1],outwardEnergy[2],outwardEnergy[3],outwardEnergy[4],outwardEnergy[5],FillLevel,depth);
+        System.out.format(" Max deltaP:%.1f Velosity[top,bottom,up,down,left,right] = Velo[%.1f,%.1f,%.1f,%.1f,%.1f,%.1f] Eval[%.1f,%.1f,%.1f,%.1f,%.1f,%.1f]  Out?[%b,%b,%b,%b,%b,%b] Fill Level:%.1f Depth:%.1f ]",getMaxPressure(),sideFluidFlow[0],sideFluidFlow[1],sideFluidFlow[2],sideFluidFlow[3],sideFluidFlow[4],sideFluidFlow[5],outwardEnergy[0],outwardEnergy[1],outwardEnergy[2],outwardEnergy[3],outwardEnergy[4],outwardEnergy[5],isOutFlow[0],isOutFlow[1],isOutFlow[2],isOutFlow[3],isOutFlow[4],isOutFlow[5],FillLevel,depth);
         System.out.println();
     }
 

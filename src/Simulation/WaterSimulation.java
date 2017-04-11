@@ -9,21 +9,25 @@ import java.util.*;
 public class WaterSimulation{
     private Level workingLevel;
     private Set WaterGroup1 = new HashSet<BlockLocation>();
-    private Set WaterBlocks;
+    private Set WaterBlocksPos;
+    private List<FluidBlock> WaterBlocks;
     private List WaterSortedByP = new ArrayList<FluidBlock>();
     private double Atmosphericpressure = 101.325;
     private final double kpaPerBlock = 9.807;
     public int tick = 0;
+
 
     WaterSimulation(){
         Atmosphericpressure = 0.0;
     }
 
     public Level doWaterSimTick(Level ThisLevel){
-        WaterBlocks = ThisLevel.WaterBlockPos;
-
-        //WaterGroup1.clear();
+        WaterBlocks = new ArrayList<>();
+        WaterBlocks.clear();
         workingLevel = ThisLevel;
+        WaterBlocksPos = ThisLevel.WaterBlockPos;
+
+
         System.out.println("Doing Sim tick["+tick+"]");
 
         Iterator iter = workingLevel.WaterBlockPos.iterator();
@@ -41,33 +45,40 @@ public class WaterSimulation{
         }
         System.out.println("Highest Block info:"+highestliq.stringBlockInfomation(workingLevel));
 
-        updateDepth(highestliq,0.0);
+        //updateDepth(highestliq,0.0);
 
         System.out.println("updatePressure done, numblocks: "+WaterGroup1.size());
 
-        FluidBlock fb1 = (FluidBlock)workingLevel.getBlock(highestliq);
-        double eval = (fb1.calcEvalue(1));
+        //FluidBlock fb1 = (FluidBlock)workingLevel.getBlock(highestliq);
+        //double eval = (fb1.calcEvalue(1));
 
 
         //Get Pressure at bottem from height
-        for (Object b : WaterGroup1) {
-            FluidBlock fb = ((FluidBlock)workingLevel.getBlock((BlockLocation)b));
-            fb.updateSideBlocks();
 
-            fb.sideFluidFlow.setZero();
-            fb.findPressureFromH();
-
+        for (Object b : WaterBlocksPos) {
+            FluidBlock fb = (FluidBlock) workingLevel.getBlock((BlockLocation) b);
+            WaterBlocks.add(fb);
         }
 
-        for (Object b : WaterGroup1) {
-            FluidBlock fb = ((FluidBlock)workingLevel.getBlock((BlockLocation)b));
+        for (FluidBlock fb : WaterBlocks) {
+            fb.updateSideBlocks();
+            fb.setZero();
+            fb.findPressureFromH();
+        }
+
+        for (FluidBlock fb : WaterBlocks) {
             fb.findoutwardEnergy();
         }
 
-        for (Object b : WaterGroup1) {
-            FluidBlock fb = ((FluidBlock)workingLevel.getBlock((BlockLocation)b));
+        for (FluidBlock fb : WaterBlocks) {
+
             fb.findoutwardVelosity();
         }
+
+        for (FluidBlock fb : WaterBlocks) {
+            fb.OutputWater();
+        }
+
 
         /*
         //Put fluidBlocks into list based on there block locations, as well as calculating the pressure of them releitive to the highest block

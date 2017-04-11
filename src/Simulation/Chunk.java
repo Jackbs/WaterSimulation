@@ -31,7 +31,12 @@ public class Chunk {
 					}
 					//System.out.print("CharBlock is: ");
 					for(int x = 0;x<charBlock.length;x++){
-						setBlock(x,y,z,new SolidBlock(Integer.parseInt(charBlock[x]),level));
+						int id = Integer.parseInt(charBlock[x]);
+						if(id == 0) {
+							setBlock(x, y, z, new AirBlock(id, level));
+						}else {
+							setBlock(x, y, z, new SolidBlock(id, level));
+						}
 
 						//System.out.print(Blocks[x][y][z]);
 					}

@@ -12,4 +12,9 @@ public class AirBlock extends Block {
     public boolean isSolid() {
         return false;
     }
+
+    @Override
+    public boolean isFluid() {
+        return false;
+    }
 }

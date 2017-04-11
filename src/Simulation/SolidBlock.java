@@ -8,5 +8,10 @@ public class SolidBlock extends Block {
     public SolidBlock(int id, Level currentLevel){
         super(id,currentLevel);
     }
+
+    @Override
+    public boolean isSolid() {
+            return true;
+    }
 }
 

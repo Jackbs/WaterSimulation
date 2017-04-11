@@ -116,8 +116,10 @@ public class Core extends MouseAdapter{
 	}
 
 	public Block getCurrentBlock(){
-		if(currentblock == 5){
-			return new FluidBlock(currentblock,level);
+		if(currentblock == 5) {
+			return new FluidBlock(currentblock, level);
+		}else if(currentblock == 0){
+			return new AirBlock(currentblock, level);
 		}else {
 			return new SolidBlock(currentblock,level);
 		}

@@ -68,13 +68,17 @@ public class FileIO {
                     blocks[id] = true;
                 }
 
+                if(info[1].equals("a")){
+                    b = new AirBlock(id, level);
+                }
+
                 if(info[1].equals("s")){
                     b = new SolidBlock(id, level);
                 }
                 if(info[1].equals("f")){
                     b = new FluidBlock(id, level);
                 }
-                if(b != null) {
+                if(b != null && !(info[1].equals("a"))) {
                     ImgMap.put(b, new BlockRender(ImageIO.read(new File("textures/"+info[2]))));
                 }
             }
