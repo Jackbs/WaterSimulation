@@ -124,13 +124,42 @@ public class FluidBlock extends Block {
                 }
                 updateSideBlocks();
                 if(!sideBlocks[side].isSolid()) {
-                    ((FluidBlock) sideBlocks[side]).sideFluidFlow[getOppisateside(side)] = sideFluidFlow[side];
+                    ((FluidBlock) sideBlocks[side]).sideFluidFlow[getOppisateside(side)] = -1*sideFluidFlow[side];
                 }
             }
         }
     }
 
+    public void EvaluateInternalFlow() {
+        double netX;
+        double netY;
+        double netZ;
 
+        for(int side = 0;side<6;side++){
+            if(sideFluidFlow[side]>0) {
+                sideFluidFlow[side] = 0;
+            }
+        }
+        netX = (sideFluidFlow[4]*-1) - (sideFluidFlow[5]*-1);
+        netY = (sideFluidFlow[2]*-1) - (sideFluidFlow[3]*-1);
+        if(netX > 0){
+            sideFluidFlow[5] = Math.abs(netX);
+        }else{
+            sideFluidFlow[4] = Math.abs(netX);
+        }
+
+        if(netY > 0){
+            sideFluidFlow[3] = Math.abs(netY);
+        }else{
+            sideFluidFlow[2] = Math.abs(netY);
+        }
+
+        for(int side = 0;side<6;side++){
+            if(sideFluidFlow[side]<0) {
+                sideFluidFlow[side] = 0;
+            }
+        }
+    }
 
     public void findPressureFromH(){
         pressure = FillLevel*9.80665*Density;

@@ -62,7 +62,6 @@ public class WaterSimulation{
 
         for (FluidBlock fb : WaterBlocks) {
             fb.updateSideBlocks();
-            fb.setZero();
             fb.findPressureFromH();
         }
 
@@ -77,6 +76,17 @@ public class WaterSimulation{
 
         for (FluidBlock fb : WaterBlocks) {
             fb.OutputWater();
+        }
+
+        WaterBlocks.clear();
+
+        for (Object b : WaterBlocksPos) {
+            FluidBlock fb = (FluidBlock) workingLevel.getBlock((BlockLocation) b);
+            WaterBlocks.add(fb);
+        }
+
+        for (FluidBlock fb : WaterBlocks) {
+            fb.EvaluateInternalFlow();
         }
 
 
@@ -100,6 +110,8 @@ public class WaterSimulation{
             ((FluidBlock)WaterSortedByP.get(i)).printAllData();
         }
         */
+
+
 
 
 
