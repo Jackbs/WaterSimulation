@@ -12,7 +12,7 @@ public class FluidBlock extends Block {
     private static final double Gravity = 9.807;
     private static final double AtmosP = 0.0;
 
-    private static final double FrameMillis = 200.0; //the time between frames in millis
+    private static final double FrameMillis = 10; //the time between frames in millis
 
     private int id;
     private Block[] sideBlocks;
@@ -24,6 +24,8 @@ public class FluidBlock extends Block {
     private double pressure;
     private double FillLevel;
     private double depth;
+
+    private double TotalOutflow;
 
     private double TotalEvalue,GravEvalue,VelosEvalue;
     private Vector3D inflowvector;
@@ -130,19 +132,18 @@ public class FluidBlock extends Block {
         }
     }
 
-    //Evaluates the height and pressure change in the block due to the outflow of the water
-    public void evalOutflowChange(){
-
-    }
-
     public void EvaluateInternalFlow() {
         double netX;
         double netY;
         double netZ;
 
+        TotalOutflow = 0.0;
+
         for(int side = 0;side<6;side++){
             if(sideFluidFlow[side]>0) {
+                TotalOutflow = TotalOutflow + sideFluidFlow[side];
                 sideFluidFlow[side] = 0;
+
             }
         }
         netX = (sideFluidFlow[4]*-1) - (sideFluidFlow[5]*-1);
@@ -164,7 +165,15 @@ public class FluidBlock extends Block {
                 sideFluidFlow[side] = 0;
             }
         }
+
+        //Do height change stuff
+
+        TotalOutflow = TotalOutflow/(1000/FrameMillis);
+        //System.out.println(TotalOutflow);
+        FillLevel = FillLevel - TotalOutflow;
     }
+
+
 
     public void findPressureFromH(){
         pressure = FillLevel*9.80665*Density;
@@ -296,7 +305,7 @@ public class FluidBlock extends Block {
     }
 
     public void FluidInfo(){
-        System.out.format(" Max deltaP:%.1f Fill Level:%.1f Depth:%.1f  Velosity[top,bottom,up,down,left,right] = Velo[%.1f,%.1f,%.1f,%.1f,%.1f,%.1f] Eval[%.1f,%.1f,%.1f,%.1f,%.1f,%.1f]  Out?[%b,%b,%b,%b,%b,%b] ]",getMaxPressure(),FillLevel,depth,sideFluidFlow[0],sideFluidFlow[1],sideFluidFlow[2],sideFluidFlow[3],sideFluidFlow[4],sideFluidFlow[5],outwardEnergy[0],outwardEnergy[1],outwardEnergy[2],outwardEnergy[3],outwardEnergy[4],outwardEnergy[5],isOutFlow[0],isOutFlow[1],isOutFlow[2],isOutFlow[3],isOutFlow[4],isOutFlow[5]);
+        System.out.format(" Max deltaP:%.1f Fill Level:%.1f Depth:%.1f OutFlow:%.1f Velosity[top,bottom,up,down,left,right] = Velo[%.1f,%.1f,%.1f,%.1f,%.1f,%.1f] Eval[%.1f,%.1f,%.1f,%.1f,%.1f,%.1f]  Out?[%b,%b,%b,%b,%b,%b]  ]",getMaxPressure(),FillLevel,depth,TotalOutflow,sideFluidFlow[0],sideFluidFlow[1],sideFluidFlow[2],sideFluidFlow[3],sideFluidFlow[4],sideFluidFlow[5],outwardEnergy[0],outwardEnergy[1],outwardEnergy[2],outwardEnergy[3],outwardEnergy[4],outwardEnergy[5],isOutFlow[0],isOutFlow[1],isOutFlow[2],isOutFlow[3],isOutFlow[4],isOutFlow[5]);
         System.out.println();
     }
 

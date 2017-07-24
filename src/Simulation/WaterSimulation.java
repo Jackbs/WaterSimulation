@@ -52,6 +52,7 @@ public class WaterSimulation{
         //FluidBlock fb1 = (FluidBlock)workingLevel.getBlock(highestliq);
         //double eval = (fb1.calcEvalue(1));
 
+        double filllevel = 0.0;
 
         //Get Pressure at bottem from height
 
@@ -76,6 +77,7 @@ public class WaterSimulation{
 
         for (FluidBlock fb : WaterBlocks) {
             fb.OutputWater();
+
         }
 
         WaterBlocks.clear();
@@ -87,7 +89,10 @@ public class WaterSimulation{
 
         for (FluidBlock fb : WaterBlocks) {
             fb.EvaluateInternalFlow();
+            filllevel = filllevel + fb.getFillLevel();
         }
+
+        System.out.println("Total Level:"+filllevel);
 
 
         /*
