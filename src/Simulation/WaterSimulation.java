@@ -43,11 +43,11 @@ public class WaterSimulation{
             System.out.println("Could not start simulation, no water blocks found");
             return workingLevel;
         }
-        System.out.println("Highest Block info:"+highestliq.stringBlockInfomation(workingLevel));
+        //System.out.println("Highest Block info:"+highestliq.stringBlockInfomation(workingLevel));
 
         //updateDepth(highestliq,0.0);
 
-        System.out.println("updatePressure done, numblocks: "+WaterGroup1.size());
+        //System.out.println("updatePressure done, numblocks: "+WaterGroup1.size());
 
         //FluidBlock fb1 = (FluidBlock)workingLevel.getBlock(highestliq);
         //double eval = (fb1.calcEvalue(1));
@@ -71,13 +71,12 @@ public class WaterSimulation{
         }
 
         for (FluidBlock fb : WaterBlocks) {
-
             fb.findoutwardVelosity();
         }
 
         for (FluidBlock fb : WaterBlocks) {
             fb.OutputWater();
-
+            fb.printAllData();
         }
 
         WaterBlocks.clear();

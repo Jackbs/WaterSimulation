@@ -127,6 +127,9 @@ public class FluidBlock extends Block {
                 updateSideBlocks();
                 if(!sideBlocks[side].isSolid()) {
                     ((FluidBlock) sideBlocks[side]).sideFluidFlow[getOppisateside(side)] = -1*sideFluidFlow[side];
+                    System.out.println("Sideblock is not solid");
+                }else{
+                    System.out.println("Sideblock is solid");
                 }
             }
         }
