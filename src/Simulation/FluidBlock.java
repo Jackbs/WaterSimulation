@@ -91,7 +91,7 @@ public class FluidBlock extends Block {
                 double netenergy;
                 //5sideBlocks[side].printAllData();
                 if(sideBlocks[side].isSolid()) {
-
+                    //TODO condition if block is solid add pressure
                 }else{
                     if(!sideBlocks[side].isFluid()){ //is the block air?
                         netenergy = outwardEnergy[side];
@@ -114,11 +114,13 @@ public class FluidBlock extends Block {
         for(int side = 0;side<6;side++){
             outwardEnergy[side] = Math.pow(sideFluidFlow[side],2)*Density*0.5 + pressure;
         }
+
     }
 
     public void OutputWater(){
         for(int side = 2;side<6;side++){
             if(isOutFlow[side]){
+                System.out.println(side);
                 if(!(sideBlocks[side].isSolid()) && !(sideBlocks[side].isFluid())){
                     FluidBlock toadd = new FluidBlock(5,currentLevel);
                     toadd.setFillLevel(0.0);
@@ -127,7 +129,7 @@ public class FluidBlock extends Block {
                 updateSideBlocks();
                 if(!sideBlocks[side].isSolid()) {
                     ((FluidBlock) sideBlocks[side]).sideFluidFlow[getOppisateside(side)] = -1*sideFluidFlow[side];
-                    System.out.println("Sideblock is not solid");
+
                 }else{
                     System.out.println("Sideblock is solid");
                 }
