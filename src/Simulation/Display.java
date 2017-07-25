@@ -149,7 +149,7 @@ public class Display {
 							}else if (Overlaymode == 3) {
 								value = String.valueOf((int) ((FluidBlock) workingBlock).getTotalEvalue());
 							}else if(Overlaymode == 4) {
-								value = String.valueOf((int) ((FluidBlock) workingBlock).getFillLevel());
+								value = String.valueOf(((FluidBlock) workingBlock).getFillLevel());
 							}else if(Overlaymode == 5) {
 								value = String.valueOf((int) ((FluidBlock) workingBlock).getDepth());
 							}

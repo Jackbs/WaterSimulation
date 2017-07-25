@@ -56,10 +56,7 @@ public class WaterSimulation{
 
         //Get Pressure at bottem from height
 
-        for (Object b : WaterBlocksPos) {
-            FluidBlock fb = (FluidBlock) workingLevel.getBlock((BlockLocation) b);
-            WaterBlocks.add(fb);
-        }
+        refreshWaterBlocks();
 
         for (FluidBlock fb : WaterBlocks) {
             fb.updateSideBlocks();
@@ -76,15 +73,9 @@ public class WaterSimulation{
 
         for (FluidBlock fb : WaterBlocks) {
             fb.OutputWater();
-            fb.printAllData();
         }
 
-        WaterBlocks.clear();
-
-        for (Object b : WaterBlocksPos) {
-            FluidBlock fb = (FluidBlock) workingLevel.getBlock((BlockLocation) b);
-            WaterBlocks.add(fb);
-        }
+        refreshWaterBlocks(); //Output of water can create new blocks, so need to referesh set of water blocks
 
         for (FluidBlock fb : WaterBlocks) {
             fb.EvaluateInternalFlow();
@@ -121,6 +112,15 @@ public class WaterSimulation{
 
         tick++;
         return workingLevel;
+    }
+
+    public void refreshWaterBlocks(){
+        WaterBlocks.clear();
+
+        for (Object b : WaterBlocksPos) {
+            FluidBlock fb = (FluidBlock) workingLevel.getBlock((BlockLocation) b);
+            WaterBlocks.add(fb);
+        }
     }
 
     public void updateDepth(BlockLocation blkloc,double topdepth){

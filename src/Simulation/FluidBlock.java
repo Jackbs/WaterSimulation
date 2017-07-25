@@ -25,7 +25,7 @@ public class FluidBlock extends Block {
     private double FillLevel;
     private double depth;
 
-    private double TotalOutflow;
+    private double NetFlow;
 
     private double TotalEvalue,GravEvalue,VelosEvalue;
     private Vector3D inflowvector;
@@ -77,7 +77,8 @@ public class FluidBlock extends Block {
     public double calcVelosity(double ExternalEval, int side){
         double value;
         value = Math.sqrt(2*((ExternalEval - pressure)/Density));
-        //System.out.println("Calculating Velosity V(m/s),ExternalEval,EvalGrav,pressure ["+value+","+ExternalEval+","+GravEvalue+","+pressure+"]");
+        System.out.println("Calculating Velosity V(m/s),ExternalEval,EvalGrav,pressure ["+value+","+ExternalEval+","+GravEvalue+","+pressure+"]");
+
         return value;
     }
 
@@ -121,13 +122,13 @@ public class FluidBlock extends Block {
         for(int side = 2;side<6;side++){
             if(isOutFlow[side]){
                 System.out.println(side);
-                if(!(sideBlocks[side].isSolid()) && !(sideBlocks[side].isFluid())){
+                if(!(sideBlocks[side].isSolid()) && !(sideBlocks[side].isFluid())){ //if the block water is being output too is air
                     FluidBlock toadd = new FluidBlock(5,currentLevel);
                     toadd.setFillLevel(0.0);
                     currentLevel.setBlock(sideBlocks[side].getBlkLoc(),toadd);
                 }
                 updateSideBlocks();
-                if(!sideBlocks[side].isSolid()) {
+                if(!sideBlocks[side].isSolid()) { //if the block is not solid
                     ((FluidBlock) sideBlocks[side]).sideFluidFlow[getOppisateside(side)] = -1*sideFluidFlow[side];
 
                 }else{
@@ -138,44 +139,39 @@ public class FluidBlock extends Block {
     }
 
     public void EvaluateInternalFlow() {
-        double netX;
-        double netY;
-        double netZ;
+        double netX = 0.0;
+        double netY = 0.0;
+        double netZ = 0.0;
 
-        TotalOutflow = 0.0;
+        NetFlow = 0.0;
 
         for(int side = 0;side<6;side++){
-            if(sideFluidFlow[side]>0) {
-                TotalOutflow = TotalOutflow + sideFluidFlow[side];
-                sideFluidFlow[side] = 0;
-
-            }
+            NetFlow = NetFlow + sideFluidFlow[side];
         }
+
+        printAllData();
+
+        if(sideBlocks[5].isSolid()){
+            netZ = sideFluidFlow[4];
+        }
+
+        if(FillLevel != 0.0){
+            NetFlow = NetFlow/(100/FrameMillis);
+            FillLevel = FillLevel - NetFlow;
+        }
+
+        //// TODO: 25/07/17 Try to fix this 
+        /*
         netX = (sideFluidFlow[4]*-1) - (sideFluidFlow[5]*-1);
         netY = (sideFluidFlow[2]*-1) - (sideFluidFlow[3]*-1);
-        if(netX > 0){
-            sideFluidFlow[5] = Math.abs(netX);
-        }else{
-            sideFluidFlow[4] = Math.abs(netX);
-        }
+        */
 
-        if(netY > 0){
-            sideFluidFlow[3] = Math.abs(netY);
-        }else{
-            sideFluidFlow[2] = Math.abs(netY);
-        }
 
-        for(int side = 0;side<6;side++){
-            if(sideFluidFlow[side]<0) {
-                sideFluidFlow[side] = 0;
-            }
-        }
 
-        //Do height change stuff
 
-        TotalOutflow = TotalOutflow/(1000/FrameMillis);
-        //System.out.println(TotalOutflow);
-        FillLevel = FillLevel - TotalOutflow;
+        //System.out.println("TotalOutFlow"+NetFlow+"  NetX,NeyY "+netX+","+netY);
+        //NetFlow = NetFlow/(100/FrameMillis);
+        //FillLevel = FillLevel - NetFlow;
     }
 
 
@@ -310,7 +306,7 @@ public class FluidBlock extends Block {
     }
 
     public void FluidInfo(){
-        System.out.format(" Max deltaP:%.1f Fill Level:%.1f Depth:%.1f OutFlow:%.1f Velosity[top,bottom,up,down,left,right] = Velo[%.1f,%.1f,%.1f,%.1f,%.1f,%.1f] Eval[%.1f,%.1f,%.1f,%.1f,%.1f,%.1f]  Out?[%b,%b,%b,%b,%b,%b]  ]",getMaxPressure(),FillLevel,depth,TotalOutflow,sideFluidFlow[0],sideFluidFlow[1],sideFluidFlow[2],sideFluidFlow[3],sideFluidFlow[4],sideFluidFlow[5],outwardEnergy[0],outwardEnergy[1],outwardEnergy[2],outwardEnergy[3],outwardEnergy[4],outwardEnergy[5],isOutFlow[0],isOutFlow[1],isOutFlow[2],isOutFlow[3],isOutFlow[4],isOutFlow[5]);
+        System.out.format(" Max deltaP:%.1f Fill Level:%.1f Depth:%.1f OutFlow:%.1f Velosity[top,bottom,up,down,left,right] = Velo[%.1f,%.1f,%.1f,%.1f,%.1f,%.1f] Eval[%.1f,%.1f,%.1f,%.1f,%.1f,%.1f]  Out?[%b,%b,%b,%b,%b,%b]  ]",getMaxPressure(),FillLevel,depth,NetFlow,sideFluidFlow[0],sideFluidFlow[1],sideFluidFlow[2],sideFluidFlow[3],sideFluidFlow[4],sideFluidFlow[5],outwardEnergy[0],outwardEnergy[1],outwardEnergy[2],outwardEnergy[3],outwardEnergy[4],outwardEnergy[5],isOutFlow[0],isOutFlow[1],isOutFlow[2],isOutFlow[3],isOutFlow[4],isOutFlow[5]);
         System.out.println();
     }
 
