@@ -11,13 +11,16 @@ public class BlockRender {
 
     private float hightdarken = 1.9f;
     BufferedImage[] NormalImages = new BufferedImage[10];
+    BufferedImage[] WaterLevels = new BufferedImage[20];
+    BufferedImage base;
 
     public BlockRender(BufferedImage read) {
-        NormalImages[1] = read;
+        base = read;
         GenerateNormalImages();
     }
 
     private void GenerateNormalImages() {
+        NormalImages[1] = base;
         BufferedImage baseImage = NormalImages[1];
         for(int i = 2;i<10;i++){
             BufferedImage bimage = new BufferedImage(baseImage.getWidth(null), baseImage.getHeight(null), BufferedImage.TYPE_INT_RGB);
@@ -37,11 +40,9 @@ public class BlockRender {
     }
 
     public BufferedImage GetNormalImage(int depth){
-
         if(depth != 1) {
             //System.out.println("Getting an image for depth: " + depth);
         }
-
         if(depth>9){
             return  NormalImages[9];
         }

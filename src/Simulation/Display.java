@@ -139,6 +139,9 @@ public class Display {
 					UI.drawImage(img, Xchunkoffset + (scale * i * blksze + xOrg), Ychunkoffset + scale * j * blksze + yOrg, blksze * scale * 1.1, blksze * scale * 1.1);
 					if(((workingBlock != null)) && !workingBlock.isSolid()) {
 						UI.setFontSize((int)(6*(scale)));
+						if(Overlaymode == 4) {
+							UI.setFontSize((int)(4*(scale)));
+						}
 						String value = "N/A";
 						if(Overlaymode == 1){
 							value = String.valueOf((int)workingBlock.getPressure());
@@ -154,7 +157,7 @@ public class Display {
 								value = String.valueOf((int) ((FluidBlock) workingBlock).getDepth());
 							}
 						}
-						UI.drawString(value,(blksze*scale*0.15)+Xchunkoffset + (scale * (i) * blksze + xOrg), (blksze*scale*0.85)+(Ychunkoffset + scale * (j) * blksze + yOrg));
+						UI.drawString(value,(blksze*scale*0.02)+Xchunkoffset + (scale * (i) * blksze + xOrg), (blksze*scale*0.80)+(Ychunkoffset + scale * (j) * blksze + yOrg));
 						}
 				}
 				//UI.drawImage(Texture, i*blksze, j*blksze, blksze, blksze);

@@ -12,7 +12,7 @@ public class FluidBlock extends Block {
     private static final double Gravity = 9.807;
     private static final double AtmosP = 0.0;
 
-    private static final double FrameMillis = 10; //the time between frames in millis
+    private static final double Timebetweenframes = 0.02; //the time between frames in millis
 
     private int id;
     private Block[] sideBlocks;
@@ -152,15 +152,21 @@ public class FluidBlock extends Block {
         printAllData();
 
         if(sideBlocks[5].isSolid()){
-            netZ = sideFluidFlow[4];
+            netZ = -1*sideFluidFlow[4];
         }
 
-        if(FillLevel != 0.0){
-            NetFlow = NetFlow/(100/FrameMillis);
-            FillLevel = FillLevel - NetFlow;
+        if(FillLevel != 1.0){
+            //netZ = netZ * Timebetweenframes;
+            //FillLevel = FillLevel + netZ;
         }
 
-        //// TODO: 25/07/17 Try to fix this 
+
+        NetFlow = NetFlow * Timebetweenframes;
+        FillLevel = FillLevel - NetFlow;
+
+        //// TODO: 25/07/17 Try to fix this
+
+
         /*
         netX = (sideFluidFlow[4]*-1) - (sideFluidFlow[5]*-1);
         netY = (sideFluidFlow[2]*-1) - (sideFluidFlow[3]*-1);

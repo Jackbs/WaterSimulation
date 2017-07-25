@@ -34,7 +34,7 @@ public class Core extends MouseAdapter{
 	double lastxOrg = 0.0;
 	double lastyOrg = 0.0;
 
-	int overlayMode = 1;
+	int overlayMode = 4;
 
 	public Core() {
 		//MCIO = new MinecraftIO();
