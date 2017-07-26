@@ -69,6 +69,8 @@ public class FluidBlock extends Block {
     }
 
 
+
+
     @Override
     public boolean isSolid() {
         return false;
@@ -149,7 +151,7 @@ public class FluidBlock extends Block {
             NetFlow = NetFlow + sideFluidFlow[side];
         }
 
-        printAllData();
+
 
         if(sideBlocks[5].isSolid()){
             netZ = -1*sideFluidFlow[4];

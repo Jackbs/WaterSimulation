@@ -110,19 +110,25 @@ public class Display {
 
 				boolean foundblock = false;
 				BufferedImage img = null;
-				if((workingBlock != null) && (workingBlock.getId() != 0)) {
-					img = (ImgMap.get(workingBlock)).GetNormalImage(1);
-
-				}else{
-
+				if((workingBlock != null) && (workingBlock.getId() != 0)) { //is working block on the right level?
+					if(workingBlock.getId() == 5) { //if the block water, if so render water
+						img = (ImgMap.get(workingBlock)).GetWaterImage(((FluidBlock)workingBlock).getFillLevel());
+					}else{
+						img = (ImgMap.get(workingBlock)).GetNormalImage(1);
+					}
+				}else{ //if the block is air or null go down until the next renderable block is found
 					foundblock = false;
 					for(int t = zLevel;t>=0;t--){
 
 						if(chunk.getBlock(i,j,t) != null) {
 							if(chunk.getBlock(i,j,t).getId() != 0) {
 								foundblock = true;
-								img = ImgMap.get(chunk.getBlock(i, j, t)).GetNormalImage(zLevel + 1 - t);
-
+								Block block = chunk.getBlock(i, j, t);
+								if(block.getId() == 5) {
+									img = (ImgMap.get(workingBlock)).GetWaterImage(((FluidBlock)workingBlock).getFillLevel());
+								}else{
+									img = ImgMap.get(block).GetNormalImage(zLevel + 1 - t);
+								}
 								//img = ImgMap.get(chunk.getBlock(i,j,t)).GetNormalImage(1);
 
 								break;

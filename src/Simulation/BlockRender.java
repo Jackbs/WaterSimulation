@@ -39,6 +39,45 @@ public class BlockRender {
         }
     }
 
+    public void GenerateWaterlevels() {
+        System.out.println("Generating water levels");
+        BufferedImage baseImage = base;
+        for(int i = 0;i<20;i++){
+            BufferedImage bimage = new BufferedImage(baseImage.getWidth(null), baseImage.getHeight(null), BufferedImage.TYPE_INT_RGB);
+            Graphics2D g = bimage.createGraphics();
+            g.drawImage(baseImage, 0, 0, null);
+            g.dispose();
+
+            //RescaleOp op = new RescaleOp(0.8f, 0, null);
+            double scaleFactor = ((i-10)/10);
+            System.out.println(scaleFactor);
+
+            RescaleOp op = new RescaleOp((float)scaleFactor, 0, null);
+            bimage = op.filter(bimage, null);
+            WaterLevels[i] = bimage;
+
+
+            //RescaleOp brighterOp = new RescaleOp(0.2f, 0, null);
+            // = brighterOp.filter(baseImage,null); //filtering
+
+            //WaterLevels[i] = base;
+            //WaterLevels[i] = changeBrightness(baseImage, 0.0f);
+        }
+    }
+
+    public BufferedImage changeBrightness(BufferedImage src,float val){
+        RescaleOp brighterOp = new RescaleOp(val, 0, null);
+        return brighterOp.filter(src,null); //filtering
+    }
+
+    public BufferedImage GetWaterImage(double filllevel){
+        int picToGet = (int)(filllevel*19);
+        if(picToGet > 19){picToGet = 19;}
+        if(picToGet < 0){picToGet = 0;}
+        System.out.println(picToGet);
+        return WaterLevels[picToGet];
+    }
+
     public BufferedImage GetNormalImage(int depth){
         if(depth != 1) {
             //System.out.println("Getting an image for depth: " + depth);

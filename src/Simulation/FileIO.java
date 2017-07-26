@@ -60,6 +60,8 @@ public class FileIO {
 
                 //System.out.println("["+info[0]+"] ["+info[1]+"] ["+info[2]+"]");
 
+
+
                 Block b = null;
                 Arrays.fill(blocks, Boolean.FALSE);
 
@@ -68,18 +70,24 @@ public class FileIO {
                     blocks[id] = true;
                 }
 
+                BlockRender temprender = null;
+
                 if(info[1].equals("a")){
                     b = new AirBlock(id, level);
+                }else{
+                    temprender = new BlockRender(ImageIO.read(new File("textures/"+info[2])));
                 }
 
                 if(info[1].equals("s")){
                     b = new SolidBlock(id, level);
-                }
-                if(info[1].equals("f")){
+
+                }else if(info[1].equals("f")){
                     b = new FluidBlock(id, level);
+                    temprender.GenerateWaterlevels();
                 }
+
                 if(b != null && !(info[1].equals("a"))) {
-                    ImgMap.put(b, new BlockRender(ImageIO.read(new File("textures/"+info[2]))));
+                    ImgMap.put(b, temprender);
                 }
             }
         } catch (IOException e) {
