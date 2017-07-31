@@ -123,7 +123,6 @@ public class FluidBlock extends Block {
     public void OutputWater(){
         for(int side = 2;side<6;side++){
             if(isOutFlow[side]){
-                System.out.println(side);
                 if(!(sideBlocks[side].isSolid()) && !(sideBlocks[side].isFluid())){ //if the block water is being output too is air
                     FluidBlock toadd = new FluidBlock(5,currentLevel);
                     toadd.setFillLevel(0.0);
@@ -141,6 +140,8 @@ public class FluidBlock extends Block {
     }
 
     public void EvaluateInternalFlow() {
+        updateSideBlocks();
+
         double netX = 0.0;
         double netY = 0.0;
         double netZ = 0.0;
@@ -149,13 +150,61 @@ public class FluidBlock extends Block {
 
         for(int side = 0;side<6;side++){
             NetFlow = NetFlow + sideFluidFlow[side];
+            if(sideFluidFlow[side]>0){
+                sideFluidFlow[side] = 0.0; //set all outflows to zero
+            }
         }
 
+        //evaluating all internal flows, multiplying by -1 because internal flow is represented by a negative number
+        netX = sideFluidFlow[4]*-1 - sideFluidFlow[5]*-1;
+        netY = sideFluidFlow[1]*-1 - sideFluidFlow[2]*-1;
+        netZ = sideFluidFlow[1]*-1 - sideFluidFlow[0]*-1;
+
+        double verticalflow = 0.0;
 
 
-        if(sideBlocks[5].isSolid()){
-            netZ = -1*sideFluidFlow[4];
+        if(netX > 0){
+            if(sideBlocks[5].isSolid()) { //net velosity flow is flowing right
+                netX = 0; //trying to flow into right wall
+                sideFluidFlow[5] = 0;
+                sideFluidFlow[4] = 0;
+            }else{
+                sideFluidFlow[5] = netX;
+                sideFluidFlow[4] = 0;
+            }
+        }else if (netX < 0){ //net velosity flow is flowing left
+            if(sideBlocks[4].isSolid()){
+                netX = 0; //trying to flow into left wall
+                sideFluidFlow[5] = 0;
+                sideFluidFlow[4] = 0;
+            }else{
+                sideFluidFlow[5] = 0;
+                sideFluidFlow[4] = -1*netX;
+            }
         }
+
+        if(netY > 0){
+            if(sideBlocks[2].isSolid()) {
+                netY = 0; //trying to flow into block above
+                sideFluidFlow[2] = 0;
+                sideFluidFlow[3] = 0;
+            }else{
+                sideFluidFlow[2] = netY;
+                sideFluidFlow[3] = 0;
+            }
+        }else if(netY < 0){
+            if(sideBlocks[3].isSolid()){
+                netY = 0; //trying to flow into block bellow
+                sideFluidFlow[2] = 0;
+                sideFluidFlow[3] = 0;
+            }else{
+                sideFluidFlow[2] = 0;
+                sideFluidFlow[3] = -1*netY; //flowing down
+            }
+        }
+        double FinalNetflow = NetFlow - netX + netY;
+        System.out.println(FinalNetflow);
+
 
         if(FillLevel != 1.0){
             //netZ = netZ * Timebetweenframes;
@@ -163,8 +212,8 @@ public class FluidBlock extends Block {
         }
 
 
-        NetFlow = NetFlow * Timebetweenframes;
-        FillLevel = FillLevel - NetFlow;
+        FinalNetflow = FinalNetflow * Timebetweenframes;
+        FillLevel = FillLevel - FinalNetflow;
 
         //// TODO: 25/07/17 Try to fix this
 
@@ -314,7 +363,7 @@ public class FluidBlock extends Block {
     }
 
     public void FluidInfo(){
-        System.out.format(" Max deltaP:%.1f Fill Level:%.1f Depth:%.1f OutFlow:%.1f Velosity[top,bottom,up,down,left,right] = Velo[%.1f,%.1f,%.1f,%.1f,%.1f,%.1f] Eval[%.1f,%.1f,%.1f,%.1f,%.1f,%.1f]  Out?[%b,%b,%b,%b,%b,%b]  ]",getMaxPressure(),FillLevel,depth,NetFlow,sideFluidFlow[0],sideFluidFlow[1],sideFluidFlow[2],sideFluidFlow[3],sideFluidFlow[4],sideFluidFlow[5],outwardEnergy[0],outwardEnergy[1],outwardEnergy[2],outwardEnergy[3],outwardEnergy[4],outwardEnergy[5],isOutFlow[0],isOutFlow[1],isOutFlow[2],isOutFlow[3],isOutFlow[4],isOutFlow[5]);
+        System.out.format(" Max deltaP:%.1f FilLVL:%.2f Depth:%.1f OutFlow:%.1f Velosity[top,bottom,up,down,left,right] = Velo[%.1f,%.1f,%.1f,%.1f,%.1f,%.1f] Eval[%.1f,%.1f,%.1f,%.1f,%.1f,%.1f]  Out?[%b,%b,%b,%b,%b,%b]  ]",getMaxPressure(),FillLevel,depth,NetFlow,sideFluidFlow[0],sideFluidFlow[1],sideFluidFlow[2],sideFluidFlow[3],sideFluidFlow[4],sideFluidFlow[5],outwardEnergy[0],outwardEnergy[1],outwardEnergy[2],outwardEnergy[3],outwardEnergy[4],outwardEnergy[5],isOutFlow[0],isOutFlow[1],isOutFlow[2],isOutFlow[3],isOutFlow[4],isOutFlow[5]);
         System.out.println();
     }
 

@@ -49,8 +49,8 @@ public class BlockRender {
             g.dispose();
 
             //RescaleOp op = new RescaleOp(0.8f, 0, null);
-            double scaleFactor = ((i-10)/10);
-            System.out.println(scaleFactor);
+            double scaleFactor = (((double)(26-i))/20);
+            //System.out.println("i, sf"+i+","+scaleFactor);
 
             RescaleOp op = new RescaleOp((float)scaleFactor, 0, null);
             bimage = op.filter(bimage, null);
@@ -74,7 +74,7 @@ public class BlockRender {
         int picToGet = (int)(filllevel*19);
         if(picToGet > 19){picToGet = 19;}
         if(picToGet < 0){picToGet = 0;}
-        System.out.println(picToGet);
+        //System.out.println(picToGet);
         return WaterLevels[picToGet];
     }
 

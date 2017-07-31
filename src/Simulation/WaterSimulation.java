@@ -78,7 +78,14 @@ public class WaterSimulation{
         refreshWaterBlocks(); //Output of water can create new blocks, so need to referesh set of water blocks
 
         for (FluidBlock fb : WaterBlocks) {
-            fb.EvaluateInternalFlow();
+            try {
+                fb.EvaluateInternalFlow();
+            } catch (Exception e){
+                System.out.println("Error when eval internal flow");
+                fb.printAllData();
+                e.printStackTrace();
+            }
+
             filllevel = filllevel + fb.getFillLevel();
         }
 
